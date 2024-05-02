@@ -1,5 +1,17 @@
 'use strict';
 
+import '../css/source.scss';
+
+import './bootstrap/modal.js'
+import './bootstrap/dropdown.js'
+import './bootstrap/tooltip.js'
+import './bootstrap/button.js'
+
+import Board from './board.js';
+import imageAnalysis from './image-analysis.js';
+import Optimizer from './optimizer2.js';
+import Profile from './profile.js';
+
 $(document).ready(function() {
 
   var form = $('#profile_weights_multiple_form');

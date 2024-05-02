@@ -4,6 +4,7 @@
     "browser": true,
     "phantomjs": true,
     "jquery": true,
+    "sourceType": "module"
   },
 
   "rules": {

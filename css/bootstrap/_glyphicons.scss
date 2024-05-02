@@ -124,7 +124,7 @@
 .glyphicon-minus-sign             { &:before { content: "\e082"; } }
 .glyphicon-remove-sign            { &:before { content: "\e083"; } }
 .glyphicon-ok-sign                { &:before { content: "\e084"; } }
-.glyphicon-question-sign          { &:before { content: "\e085"; } }
+.glyphicon-question-sign          { &:before { content: "\e085"; }; font-family: 'Glyphicons Halflings'; }
 .glyphicon-info-sign              { &:before { content: "\e086"; } }
 .glyphicon-screenshot             { &:before { content: "\e087"; } }
 .glyphicon-remove-circle          { &:before { content: "\e088"; } }
@@ -294,9 +294,9 @@
 .glyphicon-object-align-left      { &:before { content: "\e247"; } }
 .glyphicon-object-align-vertical  { &:before { content: "\e248"; } }
 .glyphicon-object-align-right     { &:before { content: "\e249"; } }
-.glyphicon-triangle-right         { &:before { content: "\e250"; } }
+.glyphicon-triangle-right         { &:before { content: "\e250"; }; font-family: 'Glyphicons Halflings' }
 .glyphicon-triangle-left          { &:before { content: "\e251"; } }
-.glyphicon-triangle-bottom        { &:before { content: "\e252"; } }
+.glyphicon-triangle-bottom        { &:before { content: "\e252"; }; font-family: 'Glyphicons Halflings'}
 .glyphicon-triangle-top           { &:before { content: "\e253"; } }
 .glyphicon-console                { &:before { content: "\e254"; } }
 .glyphicon-superscript            { &:before { content: "\e255"; } }

@@ -63,7 +63,7 @@ Don't worry, modernizr JavaScript does check your browser. If something is not s
 Development
 ------------
 
-Run `gulp` to start a development server at port 8080. The only SCSS file (source.scss) will compile to CSS on-the-fly. Both JS and CSS are auto minify. Everything is config under gulpfile.js.
+Run `npm run dev` to start a development server.
 
 JavaScript Structure
 ------------

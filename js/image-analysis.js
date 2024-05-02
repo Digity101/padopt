@@ -4,7 +4,7 @@
 
 'use strict';
 
-var imageAnalysis = function(screenshot_url, cols, rows, callback){
+export default function imageAnalysis(screenshot_url, cols, rows, callback){
   /*****************************************************************************
   * Variables
   *****************************************************************************/

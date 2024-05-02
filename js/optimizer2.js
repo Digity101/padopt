@@ -16,7 +16,7 @@ Coordinate.prototype.getXY = function(){
 };
 // End
 
-var Optimizer = function(opts){
+export default function Optimizer(opts){
   var _debug = true;
   var _rows = opts['rows'];
   var _cols = opts['cols'];

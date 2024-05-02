@@ -1,6 +1,6 @@
 'use strict';
 
-var Profile = function(){
+export default function Profile(){
   var DEFAULT_PROFILE = {
     name: '--Default--',
     weights: [1,1,0,0,1,1,0,0,1,1,0,0,1,1,0,0,1,1,0,0,0.3,0.3,0,0,0.1,0.1,0,0,0.1,0.1,0,0,0.1,0.1,0,0],

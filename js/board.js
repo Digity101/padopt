@@ -3,8 +3,9 @@
 * Path drawing credit to izenn (https://github.com/izenn/padopt) and more.
 */
 'use strict';
+import { ORB_IMAGE_DATA, ORB_BG_IMAGE_DATA } from './orbs_data.js';
 
-var Board = function(canvas_id, opts){
+export default function Board(canvas_id, opts){
   var _debug = false;
   var _draw_style = opts['draw_style'];
   var _canvas = document.getElementById(canvas_id);

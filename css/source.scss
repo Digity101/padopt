@@ -29,7 +29,7 @@ input[type=number] {
 
 // body background, and monospace font (for better alignment)
 body {
-  background-image: url('../img/bg.gif');
+  background-image: url('/bg.gif');
   background-repeat: repeat;
   font-family: 'Roboto', monospace;
   // http://stackoverflow.com/questions/826782/css-rule-to-disable-text-selection-highlighting
