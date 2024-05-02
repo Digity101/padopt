@@ -272,6 +272,24 @@ export default function Optimizer(opts){
               }
             }
           }
+        } if (count == 5) {
+          for (var k = 0; k < _rows - 2; ++ k) {
+            for (var l = 0; l < _cols - 2; ++l){
+              if (thisMatch[k][l] === 0 && thisMatch[k][l+1] === 1 && thisMatch[k][l+2] === 0 &&
+                  thisMatch[k+1][l] === 1 && thisMatch[k+1][l+1] === 1 && thisMatch[k+1][l+2] === 1 &&
+                  thisMatch[k+2][l] === 0 && thisMatch[k+2][l+1] === 1 && thisMatch[k+2][l+2] === 0) {
+                  matchStyle = MatchStyle.Cross;
+              } else if ( (thisMatch[k][l+2] === 1 && thisMatch[k+2][l] === 1) || (thisMatch[k][l] === 1 && thisMatch[k+2][l+2] === 1) ) {
+                  matchStyle = MatchStyle.L;
+              } else if ((thisMatch[k][l] === 1 && thisMatch[k][l+2] === 1 && thisMatch[k+2][l+1] === 1) ||
+              (thisMatch[k+2][l] === 1 && thisMatch[k+2][l+2] === 1 && thisMatch[k][l+1] === 1) ||
+              (thisMatch[k][l] === 1 && thisMatch[k+2][l] === 1 && thisMatch[k+1][l+2] === 1) ||
+              (thisMatch[k][l+2] === 1 && thisMatch[k+2][l+2] === 1 && thisMatch[k+1][l] === 1)
+            ) {
+                matchStyle = MatchStyle.T;
+              }
+            }
+          }
         } else { // Row check
           for(var k = 0; k < _rows; ++k)
           {
@@ -590,6 +608,7 @@ export default function Optimizer(opts){
     },
     getSolution: function(index){
       var solution = _solutions[index];
+      console.log(solution);
       solution.init_board = _board;
       return solution;
     },
