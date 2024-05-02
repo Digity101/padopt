@@ -1,13 +1,13 @@
 /*!
-* Author: Leonardo Wong (https://github.com/ledowong)
-*/
+ * Author: Leonardo Wong (https://github.com/ledowong)
+ */
 
-'use strict';
+"use strict";
 
-export default function imageAnalysis(screenshot_url, cols, rows, callback){
+export default function imageAnalysis(screenshot_url, cols, rows, callback) {
   /*****************************************************************************
-  * Variables
-  *****************************************************************************/
+   * Variables
+   *****************************************************************************/
   var debug = false;
   var debug_grid = false;
   var debug_shape_dark = false;
@@ -24,30 +24,70 @@ export default function imageAnalysis(screenshot_url, cols, rows, callback){
   // GEM color profile
   //                            Normal              Transparent Light BG     Transparent Dark BG
   //                     minH,maxH,  minV,  maxV  minH,maxH,  minV,  maxV  minH,maxH,  minV,  maxV
-  var fire_default =    [[  5,  20, 15000, 26000],[  1,  15, 11701, 25000],[  2,  15,  5000, 18000]];
-  var light_default =   [[ 45,  60, 15000, 26000],[ 30,  51, 10000, 25000],[ 30,  50,  5000, 18000]];
-  var wood_default =    [[125, 150, 15000, 26000],[ 50, 135,  5000, 15000],[ 85, 145,  5000, 15000]];
-  var water_default =   [[195, 215, 18000, 26000],[210, 295,  5000, 18000],[210, 255,  5000, 18000]];
-  var junk_default =    [[195, 235,  8000, 17999],[  1, 360,  7000, 10000],[245, 345,  4000,  7999]];
-  var poison2_default = [[268, 275, 15000, 25000],[  5,  15, 30000, 30000],[  3,  15, 30000, 30000]];
-  var poison_default =  [[276, 282, 15000, 21000],[  3,  15,  9000, 11700],[340, 360,  5000, 10000]];
-  var dark_default =    [[282, 300, 14000, 26000],[300, 345, 10000, 15000],[295, 329,  5000, 15000]];
-  var heart_default =   [[310, 330, 15000, 26000],[325, 350, 10000, 25000],[325, 345,  8000, 18000]];
+  var fire_default = [
+    [5, 20, 15000, 26000],
+    [1, 15, 11701, 25000],
+    [2, 15, 5000, 18000],
+  ];
+  var light_default = [
+    [45, 60, 15000, 26000],
+    [30, 51, 10000, 25000],
+    [30, 50, 5000, 18000],
+  ];
+  var wood_default = [
+    [125, 150, 15000, 26000],
+    [50, 135, 5000, 15000],
+    [85, 145, 5000, 15000],
+  ];
+  var water_default = [
+    [195, 215, 18000, 26000],
+    [210, 295, 5000, 18000],
+    [210, 255, 5000, 18000],
+  ];
+  var junk_default = [
+    [195, 235, 8000, 17999],
+    [1, 360, 7000, 10000],
+    [245, 345, 4000, 7999],
+  ];
+  var poison2_default = [
+    [268, 275, 15000, 25000],
+    [5, 15, 30000, 30000],
+    [3, 15, 30000, 30000],
+  ];
+  var poison_default = [
+    [276, 282, 15000, 21000],
+    [3, 15, 9000, 11700],
+    [340, 360, 5000, 10000],
+  ];
+  var dark_default = [
+    [282, 300, 14000, 26000],
+    [300, 345, 10000, 15000],
+    [295, 329, 5000, 15000],
+  ];
+  var heart_default = [
+    [310, 330, 15000, 26000],
+    [325, 350, 10000, 25000],
+    [325, 345, 8000, 18000],
+  ];
   //
 
   /*****************************************************************************
-  * Helper functions
-  *****************************************************************************/
+   * Helper functions
+   *****************************************************************************/
   function rgbToHex(r, g, b) {
     return ((r << 16) | (g << 8) | b).toString(16);
   }
-  function rgb2hsv(r,g,b) {
-    var rr, gg, bb, h, s,
-    v = Math.max(r, g, b),
-    diff = v - Math.min(r, g, b),
-    diffc = function (c) {
-      return (v - c) / 6 / diff + 1 / 2;
-    };
+  function rgb2hsv(r, g, b) {
+    var rr,
+      gg,
+      bb,
+      h,
+      s,
+      v = Math.max(r, g, b),
+      diff = v - Math.min(r, g, b),
+      diffc = function (c) {
+        return (v - c) / 6 / diff + 1 / 2;
+      };
     if (diff === 0) {
       h = s = 0;
     } else {
@@ -55,23 +95,31 @@ export default function imageAnalysis(screenshot_url, cols, rows, callback){
       rr = diffc(r);
       gg = diffc(g);
       bb = diffc(b);
-      if (r === v) {h = bb - gg}
-      else if (g === v) {h = (1 / 3) + rr - bb}
-      else if (b === v) {h = (2 / 3) + gg - rr};
-      if (h < 0) {h += 1}
-      else if (h > 1) {h -= 1}
+      if (r === v) {
+        h = bb - gg;
+      } else if (g === v) {
+        h = 1 / 3 + rr - bb;
+      } else if (b === v) {
+        h = 2 / 3 + gg - rr;
+      }
+      if (h < 0) {
+        h += 1;
+      } else if (h > 1) {
+        h -= 1;
+      }
     }
     return {
-      h: (h * 360 + 0.5) |0,
-      s: (s * 100 + 0.5) |0,
-      v: (v * 100 + 0.5) |0
-    }
+      h: (h * 360 + 0.5) | 0,
+      s: (s * 100 + 0.5) | 0,
+      v: (v * 100 + 0.5) | 0,
+    };
   }
-  function drawFinalResult(){ // for debug
-    console.log('drawFinalResult');
-    console.log(end_results.join(''));
-    screenshot_canvas = document.createElement('canvas');
-    screenshot_canvas.id = 'screenshot_canvas';
+  function drawFinalResult() {
+    // for debug
+    console.log("drawFinalResult");
+    console.log(end_results.join(""));
+    screenshot_canvas = document.createElement("canvas");
+    screenshot_canvas.id = "screenshot_canvas";
     document.body.appendChild(screenshot_canvas);
     Caman(screenshot_canvas, screenshot_url, function () {
       // greyscale > threshold // stackBlur(10).
@@ -79,61 +127,57 @@ export default function imageAnalysis(screenshot_url, cols, rows, callback){
         grid_position[2] - grid_position[0],
         grid_position[3] - grid_position[1],
         grid_position[0],
-        grid_position[1]
-      ).resize({
-        width: resize_board_to
-      }).render(function(){
-        var canvas = document.getElementById('screenshot_canvas');
-        var ctx = canvas.getContext("2d");
-        var block_size = resize_board_to / grid[0];
-        var half_block_size = block_size / 2;
-        // border
-        // ctx.strokeStyle="#FFFF00";
-        // ctx.lineWidth=5;
-        // ctx.strokeRect(0, 0, resize_board_to, block_size * grid[1]);
-        // grid line
-        ctx.fillStyle="#FF0000";
-        for (var y=1; y < grid[1]; y++) {
-          ctx.fillRect(0,
-                       block_size * y,
-                       resize_board_to,
-                       2);
-        }
-        for (var x=1; x < grid[0]; x++) {
-          ctx.fillRect(block_size * x,
-                       0,
-                       2,
-                       block_size * grid[1]);
-        }
-        // gem color result
-        for (var y=0; y < grid[1]; y++) {
-          for (var x=0; x < grid[0]; x++) {
-            var tx = x * half_block_size * 2 + half_block_size;
-            var ty = y * half_block_size * 2 + half_block_size;
-            var index = (grid[1]*y)+x+y;
-            if (end_results[index] === 'x') {
-              ctx.fillStyle = "#FF0000";
-            } else {
-              ctx.fillStyle = "#FFFFFF";
-            }
-            ctx.font = "36px Arial";
-            ctx.fillText(end_results[index],tx,ty);
-            ctx.strokeStyle="#FF0000";
-            ctx.lineWidth=1;
-            ctx.strokeText(end_results[index],tx,ty);
+        grid_position[1],
+      )
+        .resize({
+          width: resize_board_to,
+        })
+        .render(function () {
+          var canvas = document.getElementById("screenshot_canvas");
+          var ctx = canvas.getContext("2d");
+          var block_size = resize_board_to / grid[0];
+          var half_block_size = block_size / 2;
+          // border
+          // ctx.strokeStyle="#FFFF00";
+          // ctx.lineWidth=5;
+          // ctx.strokeRect(0, 0, resize_board_to, block_size * grid[1]);
+          // grid line
+          ctx.fillStyle = "#FF0000";
+          for (var y = 1; y < grid[1]; y++) {
+            ctx.fillRect(0, block_size * y, resize_board_to, 2);
           }
-        }
-      });
+          for (var x = 1; x < grid[0]; x++) {
+            ctx.fillRect(block_size * x, 0, 2, block_size * grid[1]);
+          }
+          // gem color result
+          for (var y = 0; y < grid[1]; y++) {
+            for (var x = 0; x < grid[0]; x++) {
+              var tx = x * half_block_size * 2 + half_block_size;
+              var ty = y * half_block_size * 2 + half_block_size;
+              var index = grid[1] * y + x + y;
+              if (end_results[index] === "x") {
+                ctx.fillStyle = "#FF0000";
+              } else {
+                ctx.fillStyle = "#FFFFFF";
+              }
+              ctx.font = "36px Arial";
+              ctx.fillText(end_results[index], tx, ty);
+              ctx.strokeStyle = "#FF0000";
+              ctx.lineWidth = 1;
+              ctx.strokeText(end_results[index], tx, ty);
+            }
+          }
+        });
     });
   }
-  function preProcessScreenshotForGemSampling(){
+  function preProcessScreenshotForGemSampling() {
     if (debug) {
-      console.log('preProcessScreenshotForGemSampling');
+      console.log("preProcessScreenshotForGemSampling");
     }
-    screenshot_canvas = document.createElement('canvas');
-    screenshot_canvas.id = 'screenshot_canvas';
+    screenshot_canvas = document.createElement("canvas");
+    screenshot_canvas.id = "screenshot_canvas";
     if (!debug) {
-      screenshot_canvas.style.display = 'none';
+      screenshot_canvas.style.display = "none";
     }
     document.body.appendChild(screenshot_canvas);
     var blur = dark_mode ? 30 : 40;
@@ -142,57 +186,54 @@ export default function imageAnalysis(screenshot_url, cols, rows, callback){
         grid_position[2] - grid_position[0],
         grid_position[3] - grid_position[1],
         grid_position[0],
-        grid_position[1]
-      ).resize({
-        width: resize_board_to
-      }).stackBlur(blur).render(sampleEachGem);
+        grid_position[1],
+      )
+        .resize({
+          width: resize_board_to,
+        })
+        .stackBlur(blur)
+        .render(sampleEachGem);
     });
   }
-  function preProcessScreenshotForFindingGridBorder(){
+  function preProcessScreenshotForFindingGridBorder() {
     if (debug) {
-      console.log('preProcessScreenshotForFindingGridBorder');
+      console.log("preProcessScreenshotForFindingGridBorder");
     }
-    screenshot_canvas = document.createElement('canvas');
-    screenshot_canvas.id = 'screenshot_canvas';
+    screenshot_canvas = document.createElement("canvas");
+    screenshot_canvas.id = "screenshot_canvas";
     if (!debug) {
-      screenshot_canvas.style.display = 'none';
+      screenshot_canvas.style.display = "none";
     }
     document.body.appendChild(screenshot_canvas);
     Caman(screenshot_canvas, screenshot_url, function () {
       this.threshold(55).render(findGrid); // 55 works better, even works when there is healing effect.
     });
   }
-  function findShape(light_background){
+  function findShape(light_background) {
     if (light_background !== true) light_background = false; // default false
     if (debug) {
-      console.log('findShape', light_background === true ? 'light' : 'dark');
+      console.log("findShape", light_background === true ? "light" : "dark");
     }
     var block_size = resize_board_to / grid[0];
-    screenshot_canvas = document.getElementById('screenshot_canvas'); // need to get again, otherwise draw not working...
+    screenshot_canvas = document.getElementById("screenshot_canvas"); // need to get again, otherwise draw not working...
     var ctx = screenshot_canvas.getContext("2d");
     if (debug) {
-      ctx.strokeStyle="#FFFF00";
-      ctx.lineWidth=5;
+      ctx.strokeStyle = "#FFFF00";
+      ctx.lineWidth = 5;
       ctx.strokeRect(0, 0, resize_board_to, block_size * grid[1]);
-      ctx.fillStyle="#FF0000";
-      for (var y=1; y < grid[1]; y++) {
-        ctx.fillRect(0,
-                     block_size * y,
-                     resize_board_to,
-                     2);
+      ctx.fillStyle = "#FF0000";
+      for (var y = 1; y < grid[1]; y++) {
+        ctx.fillRect(0, block_size * y, resize_board_to, 2);
       }
-      for (var x=1; x < grid[0]; x++) {
-        ctx.fillRect(block_size * x,
-                     0,
-                     2,
-                     block_size * grid[1]);
+      for (var x = 1; x < grid[0]; x++) {
+        ctx.fillRect(block_size * x, 0, 2, block_size * grid[1]);
       }
     }
     var shape_result, p, tx, ty, sample1, sample2, sample3, sample4, d, dark_bg;
     var result_index = 0;
-    for (var y=0; y < grid[1]; y++) {
-      dark_bg = (y % 2 === 0);
-      for (var x=0; x < grid[0]; x++) {
+    for (var y = 0; y < grid[1]; y++) {
+      dark_bg = y % 2 === 0;
+      for (var x = 0; x < grid[0]; x++) {
         if ((light_background && !dark_bg) || (!light_background && dark_bg)) {
           if (rows == 6) {
             d = 16; // 7x6
@@ -202,65 +243,86 @@ export default function imageAnalysis(screenshot_url, cols, rows, callback){
           // if this point is...
           // black: it can be Heart/Junk/Poison
           // white: it can be Circle/Poison/Poison2
-          sample1 = isBlack(x * block_size + (block_size/2),
-                            y * block_size + (block_size/d),
-                            true);
+          sample1 = isBlack(
+            x * block_size + block_size / 2,
+            y * block_size + block_size / d,
+            true,
+          );
           //******************************************************
           // if this point is...
           // black, it can be Circle/Heart/Junk/Poison/Poison2
           // white: it can be Poison/Poison2
-          sample2 = isBlack(x * block_size + (block_size/19*18), // right top corner, to avoid Lock icon.
-                            y * block_size + (block_size/19),
-                            true);
+          sample2 = isBlack(
+            x * block_size + (block_size / 19) * 18, // right top corner, to avoid Lock icon.
+            y * block_size + block_size / 19,
+            true,
+          );
           //******************************************************
           // if this point is...
           // black, it can be Circle/Heart/Junk/Poison/Poison2
           // white: it can be Poison/Poison2
-          sample3 = isBlack(x * block_size + (block_size/11*10), // right top corner, to avoid Lock icon.
-                            y * block_size + (block_size/11),
-                            true);
+          sample3 = isBlack(
+            x * block_size + (block_size / 11) * 10, // right top corner, to avoid Lock icon.
+            y * block_size + block_size / 11,
+            true,
+          );
           //******************************************************
           // we just try to make sure which gem is circle. This logic can't confirm other sharpe yet.
           if (!sample1 && sample2 && sample3) {
-            shape_results[result_index] = 'o';
+            shape_results[result_index] = "o";
           } else {
             // so it is not circle. If sample 4 & 5 is white, it must be square (heart)
-            sample1 = isBlack(x * block_size + (block_size/10*8),
-                              y * block_size + (block_size/10*8),
-                              true);
-            sample2 = isBlack(x * block_size + (block_size/10*2),
-                              y * block_size + (block_size/10*8),
-                              true);
+            sample1 = isBlack(
+              x * block_size + (block_size / 10) * 8,
+              y * block_size + (block_size / 10) * 8,
+              true,
+            );
+            sample2 = isBlack(
+              x * block_size + (block_size / 10) * 2,
+              y * block_size + (block_size / 10) * 8,
+              true,
+            );
             if (!sample1 && !sample2) {
               // if both is white, it is heart.
-              shape_results[result_index] = 's';
+              shape_results[result_index] = "s";
             } else {
               // oh shit, not circle and not heart?
               // sample more point...
-              sample1 = isBlack(x * block_size + (block_size/30*19),
-                                y * block_size + (block_size/30*16),
-                                true);
-              sample2 = isBlack(x * block_size + (block_size/30*11),
-                                y * block_size + (block_size/30*16),
-                                true);
-              sample3 = isBlack(x * block_size + (block_size/30*15),
-                                y * block_size + (block_size/30*12), // remark: 30*11 is better for normal mode; 13 fail in light background (iPhone need 12)
-                                true);
+              sample1 = isBlack(
+                x * block_size + (block_size / 30) * 19,
+                y * block_size + (block_size / 30) * 16,
+                true,
+              );
+              sample2 = isBlack(
+                x * block_size + (block_size / 30) * 11,
+                y * block_size + (block_size / 30) * 16,
+                true,
+              );
+              sample3 = isBlack(
+                x * block_size + (block_size / 30) * 15,
+                y * block_size + (block_size / 30) * 12, // remark: 30*11 is better for normal mode; 13 fail in light background (iPhone need 12)
+                true,
+              );
               if (!sample1 && !sample2 && sample3) {
                 // junk !!!
-                shape_results[result_index] = 'j';
+                shape_results[result_index] = "j";
               } else {
                 // still no idea what shape it is...
                 // it might be poison, but it might also because above logic fail.
                 // so we should not asume this is poison.
-                shape_results[result_index] = '?';
+                shape_results[result_index] = "?";
               }
             }
           }
           if (debug && (debug_shape_dark || debug_shape_light)) {
-            ctx.fillStyle = (shape_results[result_index] === '?') ? "#ff0000" : "#00ff00";
+            ctx.fillStyle =
+              shape_results[result_index] === "?" ? "#ff0000" : "#00ff00";
             ctx.font = "36px Arial";
-            ctx.fillText(shape_results[result_index], x * block_size+block_size/3 , y * block_size+block_size/3);
+            ctx.fillText(
+              shape_results[result_index],
+              x * block_size + block_size / 3,
+              y * block_size + block_size / 3,
+            );
           }
         } // if ((light_background && !dark_bg) || (!light_background && dark_bg)) {
         result_index += 1;
@@ -270,81 +332,90 @@ export default function imageAnalysis(screenshot_url, cols, rows, callback){
     if (light_background) {
       // finish shape detection, go to color detection.
       if (debug && debug_shape_light) {
-        throw('debug light shape');
+        throw "debug light shape";
       }
       removeCanvas();
       preProcessScreenshotForGemSampling();
     } else {
       // only finish dark background gem, now go to gem with light background
       if (debug && debug_shape_dark) {
-        throw('debug dark shape');
+        throw "debug dark shape";
       }
       removeCanvas();
       preProcessScreenshotForFindingShape(true);
     }
   }
-  function preProcessScreenshotForFindingShape(light_background){
+  function preProcessScreenshotForFindingShape(light_background) {
     if (light_background !== true) light_background = false; // default false
     var threshold = 75; // 72 somethings fail to detect poison.
     if (light_background) threshold = 82;
     if (debug) {
-      console.log('preProcessScreenshotForFindingShape', threshold, light_background === true ? 'light' : 'dark');
+      console.log(
+        "preProcessScreenshotForFindingShape",
+        threshold,
+        light_background === true ? "light" : "dark",
+      );
     }
-    screenshot_canvas = document.createElement('canvas');
-    screenshot_canvas.id = 'screenshot_canvas';
+    screenshot_canvas = document.createElement("canvas");
+    screenshot_canvas.id = "screenshot_canvas";
     if (!debug) {
-      screenshot_canvas.style.display = 'none';
+      screenshot_canvas.style.display = "none";
     }
     document.body.appendChild(screenshot_canvas);
-    Caman(screenshot_canvas, screenshot_url, function() {
+    Caman(screenshot_canvas, screenshot_url, function () {
       this.crop(
         grid_position[2] - grid_position[0],
         grid_position[3] - grid_position[1],
         grid_position[0],
-        grid_position[1]
-      ).resize({
-        width: resize_board_to
-      }).stackBlur(6).threshold(threshold).render(function(){ // best config, to make sure the background of gem is removed.
-        findShape(light_background);
-      }); // caman.js render
+        grid_position[1],
+      )
+        .resize({
+          width: resize_board_to,
+        })
+        .stackBlur(6)
+        .threshold(threshold)
+        .render(function () {
+          // best config, to make sure the background of gem is removed.
+          findShape(light_background);
+        }); // caman.js render
     });
   }
-  function removeCanvas(){
+  function removeCanvas() {
     var elem = document.getElementById("screenshot_canvas");
     if (elem) elem.parentElement.removeChild(elem);
   }
-  function isBlack(x,y, draw){
-    screenshot_canvas = document.getElementById('screenshot_canvas'); // need to get again, otherwise draw not working...
+  function isBlack(x, y, draw) {
+    screenshot_canvas = document.getElementById("screenshot_canvas"); // need to get again, otherwise draw not working...
     var ctx = screenshot_canvas.getContext("2d");
     var p = ctx.getImageData(x, y, 1, 1).data;
     var hex = ("000000" + rgbToHex(p[0], p[1], p[2])).slice(-6);
     if (hex == "000000") {
       if (debug && draw) {
         ctx.fillStyle = "#00FF00";
-        ctx.fillRect(x,y,1,1);
+        ctx.fillRect(x, y, 1, 1);
       }
       return true;
     } else {
       if (debug) {
         ctx.fillStyle = "#FF0000";
-        ctx.fillRect(x,y,1,1);
+        ctx.fillRect(x, y, 1, 1);
       }
       return false;
     }
   }
-  function findGrid(){
+  function findGrid() {
     if (debug) {
-      console.log('findGrid');
+      console.log("findGrid");
     }
-    function findTopX(x, y, w, h){
-      if (debug) console.log('findTopX', x, y, w, h);
+    function findTopX(x, y, w, h) {
+      if (debug) console.log("findTopX", x, y, w, h);
       while (x > 0) {
-        if (isBlack(x,y)) {
+        if (isBlack(x, y)) {
           // check the right side, see if all white, it should be HP bar if it does.
           var shifted_y = y - one_block;
           var all_black = true;
           while (y > shifted_y) {
-            if (!isBlack(x,shifted_y)) {
+            if (!isBlack(x, shifted_y)) {
               all_black = false;
               break;
             }
@@ -359,14 +430,14 @@ export default function imageAnalysis(screenshot_url, cols, rows, callback){
       }
       return 0; // if not found, return image left border.
     }
-    function findBottomX(x, y, w, h){
+    function findBottomX(x, y, w, h) {
       while (x < w) {
-        if (isBlack(x,y)) {
+        if (isBlack(x, y)) {
           // check the right side, see if all white, it should be HP bar if it does.
           var shifted_y = y - one_block;
           var all_black = true;
           while (y > shifted_y) {
-            if (!isBlack(x,shifted_y)) {
+            if (!isBlack(x, shifted_y)) {
               all_black = false;
               break;
             }
@@ -381,20 +452,20 @@ export default function imageAnalysis(screenshot_url, cols, rows, callback){
       }
       return w; // if not found, return image right border.
     }
-    function findBottomY(topX, topY, bottomX){
+    function findBottomY(topX, topY, bottomX) {
       // calculate base on top XY, bottom X, and grid [6,5]
       var block_size = (bottomX - topX) / grid[0];
       // console.log(block_size, block_size * grid[1], (block_size * grid[1]) + topY);
-      return (block_size * grid[1]) + topY;
+      return block_size * grid[1] + topY;
     }
-    function findTopY(x, y, w, h){
+    function findTopY(x, y, w, h) {
       while (y > 0) {
-        if (isBlack(x,y)) {
+        if (isBlack(x, y)) {
           // check the right side, see if all white, it should be HP bar if it does.
           var shifted_x = x - one_block;
           var all_black = true;
           while (x > shifted_x) {
-            if (!isBlack(shifted_x,y)) {
+            if (!isBlack(shifted_x, y)) {
               all_black = false;
               break;
             }
@@ -410,31 +481,33 @@ export default function imageAnalysis(screenshot_url, cols, rows, callback){
       return null;
     }
     var sample_per_pixel = 1; // must be 1, otherwise shape detection is not accurate enough.
-    screenshot_canvas = document.getElementById('screenshot_canvas'); // need to get again, otherwise draw not working...
+    screenshot_canvas = document.getElementById("screenshot_canvas"); // need to get again, otherwise draw not working...
     var width = screenshot_canvas.width;
     var height = screenshot_canvas.height;
     var one_block = width / 4;
     // the position we begin with.
     var x = one_block * 2; // middle
-    var y = height / 4 * 3; // not starting at the bottom, to prevent android menu bar.
+    var y = (height / 4) * 3; // not starting at the bottom, to prevent android menu bar.
     var topX = findTopX(x, y, width, height);
     var bottomX = findBottomX(x, y, width, height);
-    var topY = findTopY(topX+one_block, y, width, height);
-    grid_position = [topX,
-                     topY,
-                     bottomX,
-                     findBottomY(topX, topY, bottomX)];
+    var topY = findTopY(topX + one_block, y, width, height);
+    grid_position = [topX, topY, bottomX, findBottomY(topX, topY, bottomX)];
     if (debug && debug_grid) {
-      throw('debug grid', grid_position);
+      throw ("debug grid", grid_position);
     }
     removeCanvas();
-    if (grid_position[0] == null || grid_position[1] == null || grid_position[2] == null || grid_position[3] == null) {
+    if (
+      grid_position[0] == null ||
+      grid_position[1] == null ||
+      grid_position[2] == null ||
+      grid_position[3] == null
+    ) {
       callback(false);
     } else {
       preProcessScreenshotForGemSampling();
     }
   }
-  function sampleGemToKey(hsv, result_index, dark_bg){
+  function sampleGemToKey(hsv, result_index, dark_bg) {
     var it_can_be = [];
     var mode_index = 0; // normal
     if (dark_mode) {
@@ -444,95 +517,138 @@ export default function imageAnalysis(screenshot_url, cols, rows, callback){
       }
     }
     // fire
-    if (hsv.h >= fire_default[mode_index][0] && fire_default[mode_index][1] >= hsv.h &&
-        hsv.v >= fire_default[mode_index][2] && fire_default[mode_index][3] >= hsv.v &&
-        (!dark_mode || (dark_mode && shape_results[result_index] === 'o'))) {
-      it_can_be.push('0');
+    if (
+      hsv.h >= fire_default[mode_index][0] &&
+      fire_default[mode_index][1] >= hsv.h &&
+      hsv.v >= fire_default[mode_index][2] &&
+      fire_default[mode_index][3] >= hsv.v &&
+      (!dark_mode || (dark_mode && shape_results[result_index] === "o"))
+    ) {
+      it_can_be.push("0");
     }
     // water
-    if (hsv.h >= water_default[mode_index][0] && water_default[mode_index][1] >= hsv.h &&
-        hsv.v >= water_default[mode_index][2] && water_default[mode_index][3] >= hsv.v &&
-        (!dark_mode || (dark_mode && shape_results[result_index] === 'o'))) {
-      it_can_be.push('1');
+    if (
+      hsv.h >= water_default[mode_index][0] &&
+      water_default[mode_index][1] >= hsv.h &&
+      hsv.v >= water_default[mode_index][2] &&
+      water_default[mode_index][3] >= hsv.v &&
+      (!dark_mode || (dark_mode && shape_results[result_index] === "o"))
+    ) {
+      it_can_be.push("1");
     }
     // wood
-    if (hsv.h >= wood_default[mode_index][0] && wood_default[mode_index][1] >= hsv.h &&
-        hsv.v >= wood_default[mode_index][2] && wood_default[mode_index][3] >= hsv.v &&
-        (!dark_mode || (dark_mode && shape_results[result_index] === 'o'))) {
-      it_can_be.push('2');
+    if (
+      hsv.h >= wood_default[mode_index][0] &&
+      wood_default[mode_index][1] >= hsv.h &&
+      hsv.v >= wood_default[mode_index][2] &&
+      wood_default[mode_index][3] >= hsv.v &&
+      (!dark_mode || (dark_mode && shape_results[result_index] === "o"))
+    ) {
+      it_can_be.push("2");
     }
     // light
-    if (hsv.h >= light_default[mode_index][0] && light_default[mode_index][1] >= hsv.h &&
-        hsv.v >= light_default[mode_index][2] && light_default[mode_index][3] >= hsv.v &&
-        (!dark_mode || (dark_mode && shape_results[result_index] === 'o'))) {
-      it_can_be.push('3');
+    if (
+      hsv.h >= light_default[mode_index][0] &&
+      light_default[mode_index][1] >= hsv.h &&
+      hsv.v >= light_default[mode_index][2] &&
+      light_default[mode_index][3] >= hsv.v &&
+      (!dark_mode || (dark_mode && shape_results[result_index] === "o"))
+    ) {
+      it_can_be.push("3");
     }
     // dark
-    if (hsv.h >= dark_default[mode_index][0] && dark_default[mode_index][1] >= hsv.h &&
-        hsv.v >= dark_default[mode_index][2] && dark_default[mode_index][3] >= hsv.v &&
-        (!dark_mode || (dark_mode && shape_results[result_index] === 'o'))) {
-      it_can_be.push('4');
+    if (
+      hsv.h >= dark_default[mode_index][0] &&
+      dark_default[mode_index][1] >= hsv.h &&
+      hsv.v >= dark_default[mode_index][2] &&
+      dark_default[mode_index][3] >= hsv.v &&
+      (!dark_mode || (dark_mode && shape_results[result_index] === "o"))
+    ) {
+      it_can_be.push("4");
     }
     // heart
-    if (hsv.h >= heart_default[mode_index][0] && heart_default[mode_index][1] >= hsv.h &&
-        hsv.v >= heart_default[mode_index][2] && heart_default[mode_index][3] >= hsv.v &&
-        (!dark_mode || (dark_mode && shape_results[result_index] === 's'))) {
-      it_can_be.push('5');
+    if (
+      hsv.h >= heart_default[mode_index][0] &&
+      heart_default[mode_index][1] >= hsv.h &&
+      hsv.v >= heart_default[mode_index][2] &&
+      heart_default[mode_index][3] >= hsv.v &&
+      (!dark_mode || (dark_mode && shape_results[result_index] === "s"))
+    ) {
+      it_can_be.push("5");
     }
     // junk
-    if (hsv.h >= junk_default[mode_index][0] && junk_default[mode_index][1] >= hsv.h &&
-        hsv.v >= junk_default[mode_index][2] && junk_default[mode_index][3] >= hsv.v &&
-        (!dark_mode || (dark_mode && shape_results[result_index] === 'j'))) {
-      it_can_be.push('8');
+    if (
+      hsv.h >= junk_default[mode_index][0] &&
+      junk_default[mode_index][1] >= hsv.h &&
+      hsv.v >= junk_default[mode_index][2] &&
+      junk_default[mode_index][3] >= hsv.v &&
+      (!dark_mode || (dark_mode && shape_results[result_index] === "j"))
+    ) {
+      it_can_be.push("8");
     }
     // poison
-    if (hsv.h >= poison_default[mode_index][0] && poison_default[mode_index][1] >= hsv.h &&
-        hsv.v >= poison_default[mode_index][2] && poison_default[mode_index][3] >= hsv.v &&
-        (!dark_mode || (dark_mode && shape_results[result_index] === '?'))) {
-      it_can_be.push('6');
+    if (
+      hsv.h >= poison_default[mode_index][0] &&
+      poison_default[mode_index][1] >= hsv.h &&
+      hsv.v >= poison_default[mode_index][2] &&
+      poison_default[mode_index][3] >= hsv.v &&
+      (!dark_mode || (dark_mode && shape_results[result_index] === "?"))
+    ) {
+      it_can_be.push("6");
     }
     // poison2
-    if (hsv.h >= poison2_default[mode_index][0] && poison2_default[mode_index][1] >= hsv.h &&
-        hsv.v >= poison2_default[mode_index][2] && poison2_default[mode_index][3] >= hsv.v &&
-        (!dark_mode || (dark_mode && shape_results[result_index] === '?'))) {
-      it_can_be.push('7');
+    if (
+      hsv.h >= poison2_default[mode_index][0] &&
+      poison2_default[mode_index][1] >= hsv.h &&
+      hsv.v >= poison2_default[mode_index][2] &&
+      poison2_default[mode_index][3] >= hsv.v &&
+      (!dark_mode || (dark_mode && shape_results[result_index] === "?"))
+    ) {
+      it_can_be.push("7");
     }
     if (it_can_be.length === 0 || it_can_be.length > 1) {
-      return 'x' // unknown
+      return "x"; // unknown
     } else {
       return it_can_be[0];
     }
   }
-  function sampleEachGem(){
+  function sampleEachGem() {
     if (debug) {
-      console.log('sampleEachGem');
+      console.log("sampleEachGem");
     }
     var results = [];
     var result_index = 0;
-    screenshot_canvas = document.getElementById('screenshot_canvas'); // need to get again, otherwise draw not working...
+    screenshot_canvas = document.getElementById("screenshot_canvas"); // need to get again, otherwise draw not working...
     var ctx = screenshot_canvas.getContext("2d");
-    var half_block = (resize_board_to / grid[0]) / 2;
+    var half_block = resize_board_to / grid[0] / 2;
     var tx, ty, p, key, dark_bg;
-    for (var y=0; y < grid[1]; y++) {
-      dark_bg = (y % 2 === 0);
-      for (var x=0; x < grid[0]; x++) {
+    for (var y = 0; y < grid[1]; y++) {
+      dark_bg = y % 2 === 0;
+      for (var x = 0; x < grid[0]; x++) {
         if (dark_mode) {
           // in dark mode, sample a bit lower left, not center. it will be easier for poison, heart and junk.
-          tx = x * half_block * 2 + (half_block * 2 / 3);
-          ty = y * half_block * 2 + (half_block * 2 / 3 * 2);
+          tx = x * half_block * 2 + (half_block * 2) / 3;
+          ty = y * half_block * 2 + ((half_block * 2) / 3) * 2;
         } else {
           tx = x * half_block * 2 + half_block;
           ty = y * half_block * 2 + half_block;
         }
         p = ctx.getImageData(tx, ty, 1, 1).data;
         key = sampleGemToKey(rgb2hsv(p[0], p[1], p[2]), result_index, dark_bg);
-        if (debug || key === 'x') {
-          console.log(y+1, x+1, rgb2hsv(p[0], p[1], p[2]), key,( shape_results ? shape_results[result_index] : null), dark_bg);
+        if (debug || key === "x") {
+          console.log(
+            y + 1,
+            x + 1,
+            rgb2hsv(p[0], p[1], p[2]),
+            key,
+            shape_results ? shape_results[result_index] : null,
+            dark_bg,
+          );
         }
         if (debug) {
           ctx.fillStyle = "#ffffff";
           ctx.font = "30px Arial";
-          ctx.fillText(key,tx,ty);
+          ctx.fillText(key, tx, ty);
         }
         results.push(key);
         result_index += 1;
@@ -541,12 +657,16 @@ export default function imageAnalysis(screenshot_url, cols, rows, callback){
     }
     end_results = results;
     removeCanvas();
-    var x_count = (end_results.join('').match(/x/g) || []).length;
-    if (!dark_mode && (x_count / (grid[1] * grid[0]) * 100) > normal_acceptable_unknown_percentage) {
+    var x_count = (end_results.join("").match(/x/g) || []).length;
+    if (
+      !dark_mode &&
+      (x_count / (grid[1] * grid[0])) * 100 >
+        normal_acceptable_unknown_percentage
+    ) {
       // can found the board border, but all gem is X... maybe dark mode?
       // (sometimes blue will detected as Junk too...)
       if (debug) {
-        console.log('go dark mode');
+        console.log("go dark mode");
       }
       dark_mode = true;
       shape_results = []; // reset, just incase
@@ -557,15 +677,14 @@ export default function imageAnalysis(screenshot_url, cols, rows, callback){
       } else {
         // $('#import-textarea').val(results.join(''));
         // $('#import-import').click();
-        callback(end_results.join(''));
+        callback(end_results.join(""));
       }
     }
   }
 
   /*****************************************************************************
-  * Main logic
-  *****************************************************************************/
+   * Main logic
+   *****************************************************************************/
   removeCanvas();
   preProcessScreenshotForFindingGridBorder();
-
 }

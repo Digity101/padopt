@@ -67,5 +67,8 @@
     "vars-on-top": 0,
 //    "wrap-iife": [2, "inside"],
     "yoda": 0
-  }
+  },
+  "extends": [
+    "prettier"
+  ]
 }

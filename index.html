@@ -1,581 +1,1187 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-  <meta charset="utf-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="apple-mobile-web-app-capable" content="yes" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
-  <meta name="description" content="Puzzle &amp; Dragons Optimizer.">
-  <meta name="keywords" content="puzzle and dragons, pad, card, game, deck, board, gungho">
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+    />
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+    <meta name="description" content="Puzzle &amp; Dragons Optimizer." />
+    <meta
+      name="keywords"
+      content="puzzle and dragons, pad, card, game, deck, board, gungho"
+    />
 
-  <title>padopt - The Puzzle &amp; Dragons Optimizer</title>
+    <title>padopt - The Puzzle &amp; Dragons Optimizer</title>
 
-  <script type="module" src="js/modernizr-custom.js"></script>
+    <script type="module" src="js/modernizr-custom.js"></script>
 
-  <link href='https://fonts.googleapis.com/css?family=Roboto+Mono|Roboto' rel='stylesheet' type='text/css'>
+    <link
+      href="https://fonts.googleapis.com/css?family=Roboto+Mono|Roboto"
+      rel="stylesheet"
+      type="text/css"
+    />
 
-  <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
-  <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
-  <!--[if lt IE 9]>
-  <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
-  <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
-  <![endif]-->
-</head>
-<body>
-  <div id="main" class="container-fluid">
-    <div id="status_bar">
-      <label class="upload_label">
-        Click here to select a screenshot<span class="hidden-xs">, or drag &amp; drop a screenshot into this page</span>.
-        <input type="file" id="file_upload">
-      </label>
-      <label class="solving_label">
-        Solving... (<span>0</span>%)
-      </label>
-      <label class="image_analysing_label">
-        Image Analysing...
-      </label>
-      <label class="error_label"></label>
-      <!--div class="active progress-bar progress-bar-striped progress-bar-danger" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 0%; display:none"></div-->
-    </div>
-    <form id="profile_weights_multiple_form">
-      <div class="row">
-        <div class="col-sm-4">
-          <canvas id="board_canvas"></canvas>
-          <!-- buttons -->
-          <div class="row" id="buttons">
-            <div class="col-xs-6 col-sm-12">
-              <button type="button" class="btn btn-primary form_solve_button btn-block" data-loading-text="Solving...">Solve</button>
-            </div>
-            <div class="col-xs-6 visible-xs-block">
-              <button type="button" class="btn btn-default  btn-block" id="form_play_button">
-                <span class="glyphicon glyphicon-play"></span>
-              </button>
-            </div>
-            <div class="col-xs-4">
-              <select class="form-control" id="form_grid_size">
-                <option value="5x4">5x4</option>
-                <option value="6x5" selected>6x5</option>
-                <option value="7x6">7x6</option>
-              </select>
-            </div>
-            <div class="col-xs-4">
-              <select class="form-control" id="form_direction">
-                <option value="4" selected>4 Direction</option>
-                <option value="8">8 Direction</option>
-              </select>
-            </div>
-            <div class="col-xs-4">
-              <select class="form-control" id="form_draw_style">
-                <option value="traditional">Overlap</option>
-                <option value="rounded">No Overlap</option>
-              </select>
-            </div>
-            <div class="col-xs-4">
-              <button type="button" class="btn btn-default btn-block" id="form_final_state_button">Final State</button>
-            </div>
-            <div class="col-xs-4">
-              <button type="button" class="btn btn-default btn-block" id="form_drop_match_button">Drop Matches</button>
-            </div>
-            <div class="col-xs-4">
-              <button type="button" class="btn btn-default btn-block" data-toggle="modal" data-target="#changeOrbsModal">Change Orbs</button>
-            </div>
-            <div class="col-xs-4">
-              <div class="btn-group btn-block dropup">
-                <button type="button" class="btn btn-default" id="form_randomize_button" data-value="r,b,g,y,p,h">Randomize</button>
-                <button type="button"  id="form_randomize_dropdown_button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                  <span class="caret"></span>
-                  <span class="sr-only">Toggle Dropdown</span>
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div id="main" class="container-fluid">
+      <div id="status_bar">
+        <label class="upload_label">
+          Click here to select a screenshot<span class="hidden-xs"
+            >, or drag &amp; drop a screenshot into this page</span
+          >.
+          <input type="file" id="file_upload" />
+        </label>
+        <label class="solving_label"> Solving... (<span>0</span>%) </label>
+        <label class="image_analysing_label"> Image Analysing... </label>
+        <label class="error_label"></label>
+        <!--div class="active progress-bar progress-bar-striped progress-bar-danger" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 0%; display:none"></div-->
+      </div>
+      <form id="profile_weights_multiple_form">
+        <div class="row">
+          <div class="col-sm-4">
+            <canvas id="board_canvas"></canvas>
+            <!-- buttons -->
+            <div class="row" id="buttons">
+              <div class="col-xs-6 col-sm-12">
+                <button
+                  type="button"
+                  class="btn btn-primary form_solve_button btn-block"
+                  data-loading-text="Solving..."
+                >
+                  Solve
                 </button>
-                <ul class="dropdown-menu" id="form_random_type">
-                  <li><a href="#" data-value="r" class="checked"><span class="gem gem0"></span> Fire</a></li>
-                  <li><a href="#" data-value="b" class="checked"><span class="gem gem1"></span> Water</a></li>
-                  <li><a href="#" data-value="g" class="checked"><span class="gem gem2"></span> Wood</a></li>
-                  <li><a href="#" data-value="y" class="checked"><span class="gem gem3"></span> Light</a></li>
-                  <li><a href="#" data-value="p" class="checked"><span class="gem gem4"></span> Dark</a></li>
-                  <li><a href="#" data-value="h" class="checked"><span class="gem gem5"></span> Heart</a></li>
-                  <li><a href="#" data-value="q"><span class="gem gem6"></span> Poison</a></li>
-                  <li><a href="#" data-value="w"><span class="gem gem7"></span> Poison 2</a></li>
-                  <li><a href="#" data-value="j"><span class="gem gem8"></span> Junk</a></li>
-                </ul>
               </div>
-            </div>
-            <div class="col-xs-4">
-              <button type="button" class="btn btn-default btn-block" id="form_clear_button">Clear</button>
-            </div>
-            <div class="col-xs-4">
-              <button type="button" class="btn btn-default btn-block" id="form_import_button">Import</button>
-            </div>
-            <div class="col-xs-6">
-              <label>
-                Max Path:
-              </label>
-              <select class="form-control" id="form_max_length">
-                <option value="1">1 (Shortest)</option>
-                <option value="10">10 (Shorter)</option>
-                <option value="11">11</option>
-                <option value="12">12</option>
-                <option value="13">13</option>
-                <option value="14">14</option>
-                <option value="15">15</option>
-                <option value="16">16</option>
-                <option value="17">17</option>
-                <option value="18">18</option>
-                <option value="19">19</option>
-                <option value="20">20</option>
-                <option value="21">21</option>
-                <option value="22">22</option>
-                <option value="23">23</option>
-                <option value="24">24</option>
-                <option value="25">25</option>
-                <option value="26">26</option>
-                <option value="27">27</option>
-                <option value="28">28</option>
-                <option value="29">29</option>
-                <option value="30" selected >30</option>
-                <option value="35">35 (Longer)</option>
-              </select>
-            </div>
-            <div class="col-xs-6">
-              <label>
-                Computation:
-              </label>
-              <select class="form-control" id="form_max_paths">
-                <option value="1" selected>1 (Faster)</option>
-                <option value="120">120</option>
-                <option value="140">140</option>
-                <option value="160">160</option>
-                <option value="180">180</option>
-                <option value="200">200</option>
-                <option value="220">220</option>
-                <option value="240">240</option>
-                <option value="260">260</option>
-                <option value="280">280</option>
-                <option value="300">300</option>
-                <option value="320">320</option>
-                <option value="340">340</option>
-                <option value="360">360</option>
-                <option value="380">380</option>
-                <option value="400">400 (Slower)</option>
-                <option value="500">500</option>
-                <option value="600">600</option>
-                <option value="700">700</option>
-                <option value="800">800</option>
-                <option value="900">900</option>
-                <option value="1000">1000</option>
-              </select>
+              <div class="col-xs-6 visible-xs-block">
+                <button
+                  type="button"
+                  class="btn btn-default btn-block"
+                  id="form_play_button"
+                >
+                  <span class="glyphicon glyphicon-play"></span>
+                </button>
+              </div>
+              <div class="col-xs-4">
+                <select class="form-control" id="form_grid_size">
+                  <option value="5x4">5x4</option>
+                  <option value="6x5" selected>6x5</option>
+                  <option value="7x6">7x6</option>
+                </select>
+              </div>
+              <div class="col-xs-4">
+                <select class="form-control" id="form_direction">
+                  <option value="4" selected>4 Direction</option>
+                  <option value="8">8 Direction</option>
+                </select>
+              </div>
+              <div class="col-xs-4">
+                <select class="form-control" id="form_draw_style">
+                  <option value="traditional">Overlap</option>
+                  <option value="rounded">No Overlap</option>
+                </select>
+              </div>
+              <div class="col-xs-4">
+                <button
+                  type="button"
+                  class="btn btn-default btn-block"
+                  id="form_final_state_button"
+                >
+                  Final State
+                </button>
+              </div>
+              <div class="col-xs-4">
+                <button
+                  type="button"
+                  class="btn btn-default btn-block"
+                  id="form_drop_match_button"
+                >
+                  Drop Matches
+                </button>
+              </div>
+              <div class="col-xs-4">
+                <button
+                  type="button"
+                  class="btn btn-default btn-block"
+                  data-toggle="modal"
+                  data-target="#changeOrbsModal"
+                >
+                  Change Orbs
+                </button>
+              </div>
+              <div class="col-xs-4">
+                <div class="btn-group btn-block dropup">
+                  <button
+                    type="button"
+                    class="btn btn-default"
+                    id="form_randomize_button"
+                    data-value="r,b,g,y,p,h"
+                  >
+                    Randomize
+                  </button>
+                  <button
+                    type="button"
+                    id="form_randomize_dropdown_button"
+                    class="btn btn-default dropdown-toggle"
+                    data-toggle="dropdown"
+                    aria-haspopup="true"
+                    aria-expanded="false"
+                  >
+                    <span class="caret"></span>
+                    <span class="sr-only">Toggle Dropdown</span>
+                  </button>
+                  <ul class="dropdown-menu" id="form_random_type">
+                    <li>
+                      <a href="#" data-value="r" class="checked"
+                        ><span class="gem gem0"></span> Fire</a
+                      >
+                    </li>
+                    <li>
+                      <a href="#" data-value="b" class="checked"
+                        ><span class="gem gem1"></span> Water</a
+                      >
+                    </li>
+                    <li>
+                      <a href="#" data-value="g" class="checked"
+                        ><span class="gem gem2"></span> Wood</a
+                      >
+                    </li>
+                    <li>
+                      <a href="#" data-value="y" class="checked"
+                        ><span class="gem gem3"></span> Light</a
+                      >
+                    </li>
+                    <li>
+                      <a href="#" data-value="p" class="checked"
+                        ><span class="gem gem4"></span> Dark</a
+                      >
+                    </li>
+                    <li>
+                      <a href="#" data-value="h" class="checked"
+                        ><span class="gem gem5"></span> Heart</a
+                      >
+                    </li>
+                    <li>
+                      <a href="#" data-value="q"
+                        ><span class="gem gem6"></span> Poison</a
+                      >
+                    </li>
+                    <li>
+                      <a href="#" data-value="w"
+                        ><span class="gem gem7"></span> Poison 2</a
+                      >
+                    </li>
+                    <li>
+                      <a href="#" data-value="j"
+                        ><span class="gem gem8"></span> Junk</a
+                      >
+                    </li>
+                  </ul>
+                </div>
+              </div>
+              <div class="col-xs-4">
+                <button
+                  type="button"
+                  class="btn btn-default btn-block"
+                  id="form_clear_button"
+                >
+                  Clear
+                </button>
+              </div>
+              <div class="col-xs-4">
+                <button
+                  type="button"
+                  class="btn btn-default btn-block"
+                  id="form_import_button"
+                >
+                  Import
+                </button>
+              </div>
+              <div class="col-xs-6">
+                <label> Max Path: </label>
+                <select class="form-control" id="form_max_length">
+                  <option value="1">1 (Shortest)</option>
+                  <option value="10">10 (Shorter)</option>
+                  <option value="11">11</option>
+                  <option value="12">12</option>
+                  <option value="13">13</option>
+                  <option value="14">14</option>
+                  <option value="15">15</option>
+                  <option value="16">16</option>
+                  <option value="17">17</option>
+                  <option value="18">18</option>
+                  <option value="19">19</option>
+                  <option value="20">20</option>
+                  <option value="21">21</option>
+                  <option value="22">22</option>
+                  <option value="23">23</option>
+                  <option value="24">24</option>
+                  <option value="25">25</option>
+                  <option value="26">26</option>
+                  <option value="27">27</option>
+                  <option value="28">28</option>
+                  <option value="29">29</option>
+                  <option value="30" selected>30</option>
+                  <option value="35">35 (Longer)</option>
+                </select>
+              </div>
+              <div class="col-xs-6">
+                <label> Computation: </label>
+                <select class="form-control" id="form_max_paths">
+                  <option value="1" selected>1 (Faster)</option>
+                  <option value="120">120</option>
+                  <option value="140">140</option>
+                  <option value="160">160</option>
+                  <option value="180">180</option>
+                  <option value="200">200</option>
+                  <option value="220">220</option>
+                  <option value="240">240</option>
+                  <option value="260">260</option>
+                  <option value="280">280</option>
+                  <option value="300">300</option>
+                  <option value="320">320</option>
+                  <option value="340">340</option>
+                  <option value="360">360</option>
+                  <option value="380">380</option>
+                  <option value="400">400 (Slower)</option>
+                  <option value="500">500</option>
+                  <option value="600">600</option>
+                  <option value="700">700</option>
+                  <option value="800">800</option>
+                  <option value="900">900</option>
+                  <option value="1000">1000</option>
+                </select>
+              </div>
             </div>
           </div>
-        </div>
-        <div class="col-sm-4">
-          <div class="row">
-            <div class="col-xs-12 form-group">
-              <label>
-                Profile:
-              </label>
-              <select class="form-control" id="form_profile"></select>
-            </div>
-            <div class="col-xs-12">
-              <a href="#" id="toggle-weight" class="open">
-                Weight:
-              </a>
-              <table id="profile-table" class=""> <!--hidden-xs-->
-                <thead>
-                  <tr>
-                    <th></th>
-                    <th>N</th>
-                    <th>Mass</th>
-                    <th>Row</th>
-                    <th>TPA</th>
-                    <th>VDP</th>
-                    <th>L</th>
-                    <th>+</th>
-                    <th>T</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td class="gem gem0" title="Fire"></td>
-                    <td><input id="e0-normal" type="number" min="0" step="0.01"/></td>
-                    <td><input id="e0-mass" type="number" min="0" step="0.01"/></td>
-                    <td><input id="e0-row" type="number" min="0"/></td>
-                    <td><input id="e0-tpa" type="number" min="0" step="0.01"/></td>
-                    <td><input id="e0-vdp" type="number" min="0"/></td>
-                    <td><input id="e0-l" type="number" min="0"/></td>
-                    <td><input id="e0-cross" type="number" min="0"/></td>
-                    <td><input id="e0-t" type="number" min="0"/></td>
-                  </tr>
-                  <tr>
-                    <td class="gem gem1" title="Water"></td>
-                    <td><input id="e1-normal" type="number" min="0" step="0.01"/></td>
-                    <td><input id="e1-mass" type="number" min="0" step="0.01"/></td>
-                    <td><input id="e1-row" type="number" min="0"/></td>
-                    <td><input id="e1-tpa" type="number" min="0" step="0.01"/></td>
-                    <td><input id="e1-vdp" type="number" min="0"/></td>
-                    <td><input id="e1-l" type="number" min="0"/></td>
-                    <td><input id="e1-cross" type="number" min="0"/></td>
-                    <td><input id="e1-t" type="number" min="0"/></td>
-                  </tr>
-                  <tr>
-                    <td class="gem gem2" title="Wood"></td>
-                    <td><input id="e2-normal" type="number" min="0" step="0.01"/></td>
-                    <td><input id="e2-mass" type="number" min="0" step="0.01"/></td>
-                    <td><input id="e2-row" type="number" min="0"/></td>
-                    <td><input id="e2-tpa" type="number" min="0" step="0.01"/></td>
-                    <td><input id="e2-vdp" type="number" min="0"/></td>
-                    <td><input id="e2-l" type="number" min="0"/></td>
-                    <td><input id="e2-cross" type="number" min="0"/></td>
-                    <td><input id="e2-t" type="number" min="0"/></td>
-                  </tr>
-                  <tr>
-                    <td class="gem gem3" title="Light"></td>
-                    <td><input id="e3-normal" type="number" min="0" step="0.01"/></td>
-                    <td><input id="e3-mass" type="number" min="0" step="0.01"/></td>
-                    <td><input id="e3-row" type="number" min="0"/></td>
-                    <td><input id="e3-tpa" type="number" min="0" step="0.01"/></td>
-                    <td><input id="e3-vdp" type="number" min="0"/></td>
-                    <td><input id="e3-l" type="number" min="0"/></td>
-                    <td><input id="e3-cross" type="number" min="0"/></td>
-                    <td><input id="e3-t" type="number" min="0"/></td>
-                  </tr>
-                  <tr>
-                    <td class="gem gem4" title="Dark"></td>
-                    <td><input id="e4-normal" type="number" min="0" step="0.01"/></td>
-                    <td><input id="e4-mass" type="number" min="0" step="0.01"/></td>
-                    <td><input id="e4-row" type="number" min="0"/></td>
-                    <td><input id="e4-tpa" type="number" min="0" step="0.01"/></td>
-                    <td><input id="e4-vdp" type="number" min="0"/></td>
-                    <td><input id="e4-l" type="number" min="0"/></td>
-                    <td><input id="e4-cross" type="number" min="0"/></td>
-                    <td><input id="e4-t" type="number" min="0"/></td>
-                  </tr>
-                  <tr>
-                    <td class="gem gem5" title="Heal"></td>
-                    <td><input id="e5-normal" value="0.3" type="number" min="0" step="0.01"/></td>
-                    <td><input id="e5-mass" value="0.3" type="number" min="0" step="0.01"/></td>
-                    <td><input id="e5-row" type="number" min="0"/></td>
-                    <td><input id="e5-tpa" type="number" min="0" step="0.01"/></td>
-                    <td><input id="e5-vdp" type="number" min="0"/></td>
-                    <td><input id="e5-l" type="number" min="0"/></td>
-                    <td><input id="e5-cross" type="number" min="0"/></td>
-                    <td><input id="e5-t" type="number" min="0"/></td>
-                  </tr>
-                  <tr>
-                    <td class="gem gem6" title="Poison"></td>
-                    <td><input id="e6-normal" value="0.1" type="number" min="0" step="0.01"/></td>
-                    <td><input id="e6-mass" value="0.1" type="number" min="0" step="0.01"/></td>
-                    <td><input id="e6-row" type="number" min="0"/></td>
-                    <td><input id="e6-tpa" type="number" min="0" step="0.01"/></td>
-                    <td><input id="e6-vdp" type="number" min="0"/></td>
-                    <td><input id="e6-l" type="number" min="0"/></td>
-                    <td><input id="e6-cross" type="number" min="0"/></td>
-                    <td><input id="e6-t" type="number" min="0"/></td>
-                  </tr>
-                  <tr>
-                    <td class="gem gem7" title="Poison2"></td>
-                    <td><input id="e7-normal" value="0.1" type="number" min="0" step="0.01"/></td>
-                    <td><input id="e7-mass" value="0.1" type="number" min="0" step="0.01"/></td>
-                    <td><input id="e7-row" type="number" min="0"/></td>
-                    <td><input id="e7-tpa" type="number" min="0" step="0.01"/></td>
-                    <td><input id="e7-vdp" type="number" min="0"/></td>
-                    <td><input id="e7-l" type="number" min="0"/></td>
-                    <td><input id="e7-cross" type="number" min="0"/></td>
-                    <td><input id="e7-t" type="number" min="0"/></td>
-                  </tr>
-                  <tr>
-                    <td class="gem gem8" title="Junk"></td>
-                    <td><input id="e8-normal" value="0.1" type="number" min="0" step="0.01"/></td>
-                    <td><input id="e8-mass" value="0.1" type="number" min="0" step="0.01"/></td>
-                    <td><input id="e8-row" type="number" min="0"/></td>
-                    <td><input id="e8-tpa" type="number" min="0" step="0.01"/></td>
-                    <td><input id="e8-vdp" type="number" min="0"/></td>
-                    <td><input id="e8-l" type="number" min="0"/></td>
-                    <td><input id="e8-cross" type="number" min="0"/></td>
-                    <td><input id="e8-t" type="number" min="0"/></td>
-                  </tr>
-                </tbody>
-                <tfoot>
-                  <tr>
-                    <th></th>
-                    <th><span class="glyphicon glyphicon-question-sign" data-placement="bottom" data-toggle="tooltip"
-                      title="For each main attribute add 1 to that color under. You can optionally add .3 to the columns for sub attributes but it won't change your results much. For color combo leads such as Kali, just put 1 for required colors and 0 for everything else."></span></th>
-                    <th><span class="glyphicon glyphicon-question-sign" data-placement="bottom" data-toggle="tooltip"
-                      title="Mass"></span></th>
-                    <th><span class="glyphicon glyphicon-question-sign" data-placement="bottom" data-toggle="tooltip"
-                      title="Row Awakens"></span></th>
-                    <th><span class="glyphicon glyphicon-question-sign" data-placement="bottom" data-toggle="tooltip"
-                      title="Put the additional weight coming from TPAs. E.g. If you have 3 monsters with 1k green attack and one has a TPA and ones has two TPA, the base weight is 3 and the TPA effect is 1*1.5 for the single TPA (.5 extra) and 1*1.5*1.5 = 2.25 (1.25 extra) for the double TPA so you enter 1.75."></span></th>
-                  </tr>
-                </tfoot>
-              </table>
-            </div>
-            <div class="col-xs-12 form-group" id="multiple_session" style="display:none">
-              <a href="#" id="toggle-multiple" class="open">
-                Multiple:
-              </a>
-              <div id="toggle-multiple-body">
-                <br/>
-                ATK x<input type="number" id="base_multiple" min="1" step="0.01" required> for all members.<br/>
-                <label><input id="multiple_combo" type="checkbox" class="checkbox"> Combo</label>
-                <div id="multiple_combo_wrapper" class="multiple_wrapper" style="display:none">
-                  ATK x<input type="number" id="combo_multiple" min="0.01" step="0.01" required> at <input type="number" id="combo_from" min="1" required> combos.
-                  ATK x<input type="number" id="combo_additional_multiple" min="0.01" step="0.01" required> for each additional combo, up to <input type="number" id="combo_upto" min="1" required> combos.
-                </div>
-                <br/>
-                <label><input id="multiple_orb_types" type="checkbox" class="checkbox"> Orb types</label>
-                <div id="multiple_orb_types_wrapper" class="multiple_wrapper" style="display:none">
-                  ATK x<input type="number" id="orbs_multiple" min="0.01" step="0.01" required> when attacking with
-                  <select id="orbs_count_from" class="form-control">
-                    <option value="1">1</option>
-                    <option value="2">2</option>
-                    <option value="3">3</option>
-                    <option value="4">4</option>
-                    <option value="5">5</option>
-                    <option value="6">6</option>
-                    <option value="7">7</option>
-                    <option value="8">8</option>
-                  </select>
-                  of following orb types:
-                  <br/>
-                  <a href="#" class="gem gem0 gem-checkbox orb_types" data-index="0"></a><a href="#" class="gem gem1 gem-checkbox orb_types" data-index="1"></a><a href="#" class="gem gem2 gem-checkbox orb_types" data-index="2"></a><a href="#" class="gem gem3 gem-checkbox orb_types" data-index="3"></a><a href="#" class="gem gem4 gem-checkbox orb_types" data-index="4"></a><a href="#" class="gem gem5 gem-checkbox orb_types" data-index="5"></a><a href="#" class="gem gem6 gem-checkbox orb_types" data-index="6"></a><a href="#" class="gem gem7 gem-checkbox orb_types" data-index="7"></a><a href="#" class="gem gem8 gem-checkbox orb_types" data-index="8"></a>
-                  <br/>
-                  ATK x<input type="number" id="orbs_additional_multiple" min="0" step="0.01" required> for each additional orb type, up to
-                  <select id="orbs_count_upto" class="form-control">
-                    <option value="1">1</option>
-                    <option value="2">2</option>
-                    <option value="3">3</option>
-                    <option value="4">4</option>
-                    <option value="5">5</option>
-                    <option value="6">6</option>
-                    <option value="7">7</option>
-                    <option value="8">8</option>
-                  </select>
-                  matches.
-                </div>
-                <br/>
-                <label><input id="multiple_connected_orbs" type="checkbox" class="checkbox"> Connected orbs</label>
-                <div id="multiple_connected_orbs_wrapper" class="multiple_wrapper" style="display:none">
-                  ATK x<input type="number" id="connected_multiple" min="0.01" step="0.01" required> when simultaneously clearing
-                  <select id="connected_count_from" class="form-control">
-                    <option value="3">3</option>
-                    <option value="4">4</option>
-                    <option value="5">5</option>
-                    <option value="6">6</option>
-                    <option value="7">7</option>
-                    <option value="8">8</option>
-                    <option value="9">9</option>
-                    <option value="10">10</option>
-                    <option value="11">11</option>
-                    <option value="12">12</option>
-                  </select>
-                  connected
-                  <a href="#" class="gem gem0 gem-checkbox connected_orbs" data-index="0"></a><a href="#" class="gem gem1 gem-checkbox connected_orbs" data-index="1"></a><a href="#" class="gem gem2 gem-checkbox connected_orbs" data-index="2"></a><a href="#" class="gem gem3 gem-checkbox connected_orbs" data-index="3"></a><a href="#" class="gem gem4 gem-checkbox connected_orbs" data-index="4"></a><a href="#" class="gem gem5 gem-checkbox connected_orbs" data-index="5"></a><a href="#" class="gem gem6 gem-checkbox connected_orbs" data-index="6"></a><a href="#" class="gem gem7 gem-checkbox connected_orbs" data-index="7"></a><a href="#" class="gem gem8 gem-checkbox connected_orbs" data-index="8"></a>
-                  orbs. ATK x<input type="number" id="connected_additional_multiple" min="0" step="0.01" required> for each additional orb, up to
-                  <select id="connected_count_upto" class="form-control">
-                    <option value="4">4</option>
-                    <option value="5">5</option>
-                    <option value="6">6</option>
-                    <option value="7">7</option>
-                    <option value="8">8</option>
-                    <option value="9">9</option>
-                    <option value="10">10</option>
-                    <option value="11">11</option>
-                    <option value="12">12</option>
-                  </select>
-                  connected orb.
-                </div>
-                <div>
-                  <label>
-                    Customize Profile Name:
-                  </label>
-                  <input type='text' class="form-control" id="name" required>
-                  <br/>
-                  <div class="col-xs-6">
-                    <button type='button' class="btn btn-warning btn-block" id="save_customize_profile_button">Save</button>
-                  </div>
-                  <div class="col-xs-6">
-                    <button type='button' class="btn btn-danger btn-block" id="delete_customize_profile_button">Delete</button>
-                  </div>
-                </div>
+          <div class="col-sm-4">
+            <div class="row">
+              <div class="col-xs-12 form-group">
+                <label> Profile: </label>
+                <select class="form-control" id="form_profile"></select>
               </div>
-            </div> <!--multiple session-->
-            <div class="col-xs-12 form-group">
-              <a href="#" id="toggle-quick-change-orbs">
-                Quick Change Orbs:
-                <span class="glyphicon glyphicon-question-sign" data-placement="bottom" data-toggle="tooltip" title="Drop screenshot into rule to apply immediately."></span>
-              </a>
-              <div id="toggle-quick-change-orbs-body" style="display:none">
-                <ol></ol>
-                <div id="quick-change-orbs-form">
-                  <div class="col-xs-5">
-                    <div class="btn-group btn-block">
-                      <button type="button" class="btn btn-default  btn-block dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        From <span class="caret"></span>
+              <div class="col-xs-12">
+                <a href="#" id="toggle-weight" class="open"> Weight: </a>
+                <table id="profile-table" class="">
+                  <!--hidden-xs-->
+                  <thead>
+                    <tr>
+                      <th></th>
+                      <th>N</th>
+                      <th>Mass</th>
+                      <th>Row</th>
+                      <th>TPA</th>
+                      <th>VDP</th>
+                      <th>L</th>
+                      <th>+</th>
+                      <th>T</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td class="gem gem0" title="Fire"></td>
+                      <td>
+                        <input
+                          id="e0-normal"
+                          type="number"
+                          min="0"
+                          step="0.01"
+                        />
+                      </td>
+                      <td>
+                        <input id="e0-mass" type="number" min="0" step="0.01" />
+                      </td>
+                      <td><input id="e0-row" type="number" min="0" /></td>
+                      <td>
+                        <input id="e0-tpa" type="number" min="0" step="0.01" />
+                      </td>
+                      <td><input id="e0-vdp" type="number" min="0" /></td>
+                      <td><input id="e0-l" type="number" min="0" /></td>
+                      <td><input id="e0-cross" type="number" min="0" /></td>
+                      <td><input id="e0-t" type="number" min="0" /></td>
+                    </tr>
+                    <tr>
+                      <td class="gem gem1" title="Water"></td>
+                      <td>
+                        <input
+                          id="e1-normal"
+                          type="number"
+                          min="0"
+                          step="0.01"
+                        />
+                      </td>
+                      <td>
+                        <input id="e1-mass" type="number" min="0" step="0.01" />
+                      </td>
+                      <td><input id="e1-row" type="number" min="0" /></td>
+                      <td>
+                        <input id="e1-tpa" type="number" min="0" step="0.01" />
+                      </td>
+                      <td><input id="e1-vdp" type="number" min="0" /></td>
+                      <td><input id="e1-l" type="number" min="0" /></td>
+                      <td><input id="e1-cross" type="number" min="0" /></td>
+                      <td><input id="e1-t" type="number" min="0" /></td>
+                    </tr>
+                    <tr>
+                      <td class="gem gem2" title="Wood"></td>
+                      <td>
+                        <input
+                          id="e2-normal"
+                          type="number"
+                          min="0"
+                          step="0.01"
+                        />
+                      </td>
+                      <td>
+                        <input id="e2-mass" type="number" min="0" step="0.01" />
+                      </td>
+                      <td><input id="e2-row" type="number" min="0" /></td>
+                      <td>
+                        <input id="e2-tpa" type="number" min="0" step="0.01" />
+                      </td>
+                      <td><input id="e2-vdp" type="number" min="0" /></td>
+                      <td><input id="e2-l" type="number" min="0" /></td>
+                      <td><input id="e2-cross" type="number" min="0" /></td>
+                      <td><input id="e2-t" type="number" min="0" /></td>
+                    </tr>
+                    <tr>
+                      <td class="gem gem3" title="Light"></td>
+                      <td>
+                        <input
+                          id="e3-normal"
+                          type="number"
+                          min="0"
+                          step="0.01"
+                        />
+                      </td>
+                      <td>
+                        <input id="e3-mass" type="number" min="0" step="0.01" />
+                      </td>
+                      <td><input id="e3-row" type="number" min="0" /></td>
+                      <td>
+                        <input id="e3-tpa" type="number" min="0" step="0.01" />
+                      </td>
+                      <td><input id="e3-vdp" type="number" min="0" /></td>
+                      <td><input id="e3-l" type="number" min="0" /></td>
+                      <td><input id="e3-cross" type="number" min="0" /></td>
+                      <td><input id="e3-t" type="number" min="0" /></td>
+                    </tr>
+                    <tr>
+                      <td class="gem gem4" title="Dark"></td>
+                      <td>
+                        <input
+                          id="e4-normal"
+                          type="number"
+                          min="0"
+                          step="0.01"
+                        />
+                      </td>
+                      <td>
+                        <input id="e4-mass" type="number" min="0" step="0.01" />
+                      </td>
+                      <td><input id="e4-row" type="number" min="0" /></td>
+                      <td>
+                        <input id="e4-tpa" type="number" min="0" step="0.01" />
+                      </td>
+                      <td><input id="e4-vdp" type="number" min="0" /></td>
+                      <td><input id="e4-l" type="number" min="0" /></td>
+                      <td><input id="e4-cross" type="number" min="0" /></td>
+                      <td><input id="e4-t" type="number" min="0" /></td>
+                    </tr>
+                    <tr>
+                      <td class="gem gem5" title="Heal"></td>
+                      <td>
+                        <input
+                          id="e5-normal"
+                          value="0.3"
+                          type="number"
+                          min="0"
+                          step="0.01"
+                        />
+                      </td>
+                      <td>
+                        <input
+                          id="e5-mass"
+                          value="0.3"
+                          type="number"
+                          min="0"
+                          step="0.01"
+                        />
+                      </td>
+                      <td><input id="e5-row" type="number" min="0" /></td>
+                      <td>
+                        <input id="e5-tpa" type="number" min="0" step="0.01" />
+                      </td>
+                      <td><input id="e5-vdp" type="number" min="0" /></td>
+                      <td><input id="e5-l" type="number" min="0" /></td>
+                      <td><input id="e5-cross" type="number" min="0" /></td>
+                      <td><input id="e5-t" type="number" min="0" /></td>
+                    </tr>
+                    <tr>
+                      <td class="gem gem6" title="Poison"></td>
+                      <td>
+                        <input
+                          id="e6-normal"
+                          value="0.1"
+                          type="number"
+                          min="0"
+                          step="0.01"
+                        />
+                      </td>
+                      <td>
+                        <input
+                          id="e6-mass"
+                          value="0.1"
+                          type="number"
+                          min="0"
+                          step="0.01"
+                        />
+                      </td>
+                      <td><input id="e6-row" type="number" min="0" /></td>
+                      <td>
+                        <input id="e6-tpa" type="number" min="0" step="0.01" />
+                      </td>
+                      <td><input id="e6-vdp" type="number" min="0" /></td>
+                      <td><input id="e6-l" type="number" min="0" /></td>
+                      <td><input id="e6-cross" type="number" min="0" /></td>
+                      <td><input id="e6-t" type="number" min="0" /></td>
+                    </tr>
+                    <tr>
+                      <td class="gem gem7" title="Poison2"></td>
+                      <td>
+                        <input
+                          id="e7-normal"
+                          value="0.1"
+                          type="number"
+                          min="0"
+                          step="0.01"
+                        />
+                      </td>
+                      <td>
+                        <input
+                          id="e7-mass"
+                          value="0.1"
+                          type="number"
+                          min="0"
+                          step="0.01"
+                        />
+                      </td>
+                      <td><input id="e7-row" type="number" min="0" /></td>
+                      <td>
+                        <input id="e7-tpa" type="number" min="0" step="0.01" />
+                      </td>
+                      <td><input id="e7-vdp" type="number" min="0" /></td>
+                      <td><input id="e7-l" type="number" min="0" /></td>
+                      <td><input id="e7-cross" type="number" min="0" /></td>
+                      <td><input id="e7-t" type="number" min="0" /></td>
+                    </tr>
+                    <tr>
+                      <td class="gem gem8" title="Junk"></td>
+                      <td>
+                        <input
+                          id="e8-normal"
+                          value="0.1"
+                          type="number"
+                          min="0"
+                          step="0.01"
+                        />
+                      </td>
+                      <td>
+                        <input
+                          id="e8-mass"
+                          value="0.1"
+                          type="number"
+                          min="0"
+                          step="0.01"
+                        />
+                      </td>
+                      <td><input id="e8-row" type="number" min="0" /></td>
+                      <td>
+                        <input id="e8-tpa" type="number" min="0" step="0.01" />
+                      </td>
+                      <td><input id="e8-vdp" type="number" min="0" /></td>
+                      <td><input id="e8-l" type="number" min="0" /></td>
+                      <td><input id="e8-cross" type="number" min="0" /></td>
+                      <td><input id="e8-t" type="number" min="0" /></td>
+                    </tr>
+                  </tbody>
+                  <tfoot>
+                    <tr>
+                      <th></th>
+                      <th>
+                        <span
+                          class="glyphicon glyphicon-question-sign"
+                          data-placement="bottom"
+                          data-toggle="tooltip"
+                          title="For each main attribute add 1 to that color under. You can optionally add .3 to the columns for sub attributes but it won't change your results much. For color combo leads such as Kali, just put 1 for required colors and 0 for everything else."
+                        ></span>
+                      </th>
+                      <th>
+                        <span
+                          class="glyphicon glyphicon-question-sign"
+                          data-placement="bottom"
+                          data-toggle="tooltip"
+                          title="Mass"
+                        ></span>
+                      </th>
+                      <th>
+                        <span
+                          class="glyphicon glyphicon-question-sign"
+                          data-placement="bottom"
+                          data-toggle="tooltip"
+                          title="Row Awakens"
+                        ></span>
+                      </th>
+                      <th>
+                        <span
+                          class="glyphicon glyphicon-question-sign"
+                          data-placement="bottom"
+                          data-toggle="tooltip"
+                          title="Put the additional weight coming from TPAs. E.g. If you have 3 monsters with 1k green attack and one has a TPA and ones has two TPA, the base weight is 3 and the TPA effect is 1*1.5 for the single TPA (.5 extra) and 1*1.5*1.5 = 2.25 (1.25 extra) for the double TPA so you enter 1.75."
+                        ></span>
+                      </th>
+                    </tr>
+                  </tfoot>
+                </table>
+              </div>
+              <div
+                class="col-xs-12 form-group"
+                id="multiple_session"
+                style="display: none"
+              >
+                <a href="#" id="toggle-multiple" class="open"> Multiple: </a>
+                <div id="toggle-multiple-body">
+                  <br />
+                  ATK x<input
+                    type="number"
+                    id="base_multiple"
+                    min="1"
+                    step="0.01"
+                    required
+                  />
+                  for all members.<br />
+                  <label
+                    ><input
+                      id="multiple_combo"
+                      type="checkbox"
+                      class="checkbox"
+                    />
+                    Combo</label
+                  >
+                  <div
+                    id="multiple_combo_wrapper"
+                    class="multiple_wrapper"
+                    style="display: none"
+                  >
+                    ATK x<input
+                      type="number"
+                      id="combo_multiple"
+                      min="0.01"
+                      step="0.01"
+                      required
+                    />
+                    at
+                    <input type="number" id="combo_from" min="1" required />
+                    combos. ATK x<input
+                      type="number"
+                      id="combo_additional_multiple"
+                      min="0.01"
+                      step="0.01"
+                      required
+                    />
+                    for each additional combo, up to
+                    <input type="number" id="combo_upto" min="1" required />
+                    combos.
+                  </div>
+                  <br />
+                  <label
+                    ><input
+                      id="multiple_orb_types"
+                      type="checkbox"
+                      class="checkbox"
+                    />
+                    Orb types</label
+                  >
+                  <div
+                    id="multiple_orb_types_wrapper"
+                    class="multiple_wrapper"
+                    style="display: none"
+                  >
+                    ATK x<input
+                      type="number"
+                      id="orbs_multiple"
+                      min="0.01"
+                      step="0.01"
+                      required
+                    />
+                    when attacking with
+                    <select id="orbs_count_from" class="form-control">
+                      <option value="1">1</option>
+                      <option value="2">2</option>
+                      <option value="3">3</option>
+                      <option value="4">4</option>
+                      <option value="5">5</option>
+                      <option value="6">6</option>
+                      <option value="7">7</option>
+                      <option value="8">8</option>
+                    </select>
+                    of following orb types:
+                    <br />
+                    <a
+                      href="#"
+                      class="gem gem0 gem-checkbox orb_types"
+                      data-index="0"
+                    ></a
+                    ><a
+                      href="#"
+                      class="gem gem1 gem-checkbox orb_types"
+                      data-index="1"
+                    ></a
+                    ><a
+                      href="#"
+                      class="gem gem2 gem-checkbox orb_types"
+                      data-index="2"
+                    ></a
+                    ><a
+                      href="#"
+                      class="gem gem3 gem-checkbox orb_types"
+                      data-index="3"
+                    ></a
+                    ><a
+                      href="#"
+                      class="gem gem4 gem-checkbox orb_types"
+                      data-index="4"
+                    ></a
+                    ><a
+                      href="#"
+                      class="gem gem5 gem-checkbox orb_types"
+                      data-index="5"
+                    ></a
+                    ><a
+                      href="#"
+                      class="gem gem6 gem-checkbox orb_types"
+                      data-index="6"
+                    ></a
+                    ><a
+                      href="#"
+                      class="gem gem7 gem-checkbox orb_types"
+                      data-index="7"
+                    ></a
+                    ><a
+                      href="#"
+                      class="gem gem8 gem-checkbox orb_types"
+                      data-index="8"
+                    ></a>
+                    <br />
+                    ATK x<input
+                      type="number"
+                      id="orbs_additional_multiple"
+                      min="0"
+                      step="0.01"
+                      required
+                    />
+                    for each additional orb type, up to
+                    <select id="orbs_count_upto" class="form-control">
+                      <option value="1">1</option>
+                      <option value="2">2</option>
+                      <option value="3">3</option>
+                      <option value="4">4</option>
+                      <option value="5">5</option>
+                      <option value="6">6</option>
+                      <option value="7">7</option>
+                      <option value="8">8</option>
+                    </select>
+                    matches.
+                  </div>
+                  <br />
+                  <label
+                    ><input
+                      id="multiple_connected_orbs"
+                      type="checkbox"
+                      class="checkbox"
+                    />
+                    Connected orbs</label
+                  >
+                  <div
+                    id="multiple_connected_orbs_wrapper"
+                    class="multiple_wrapper"
+                    style="display: none"
+                  >
+                    ATK x<input
+                      type="number"
+                      id="connected_multiple"
+                      min="0.01"
+                      step="0.01"
+                      required
+                    />
+                    when simultaneously clearing
+                    <select id="connected_count_from" class="form-control">
+                      <option value="3">3</option>
+                      <option value="4">4</option>
+                      <option value="5">5</option>
+                      <option value="6">6</option>
+                      <option value="7">7</option>
+                      <option value="8">8</option>
+                      <option value="9">9</option>
+                      <option value="10">10</option>
+                      <option value="11">11</option>
+                      <option value="12">12</option>
+                    </select>
+                    connected
+                    <a
+                      href="#"
+                      class="gem gem0 gem-checkbox connected_orbs"
+                      data-index="0"
+                    ></a
+                    ><a
+                      href="#"
+                      class="gem gem1 gem-checkbox connected_orbs"
+                      data-index="1"
+                    ></a
+                    ><a
+                      href="#"
+                      class="gem gem2 gem-checkbox connected_orbs"
+                      data-index="2"
+                    ></a
+                    ><a
+                      href="#"
+                      class="gem gem3 gem-checkbox connected_orbs"
+                      data-index="3"
+                    ></a
+                    ><a
+                      href="#"
+                      class="gem gem4 gem-checkbox connected_orbs"
+                      data-index="4"
+                    ></a
+                    ><a
+                      href="#"
+                      class="gem gem5 gem-checkbox connected_orbs"
+                      data-index="5"
+                    ></a
+                    ><a
+                      href="#"
+                      class="gem gem6 gem-checkbox connected_orbs"
+                      data-index="6"
+                    ></a
+                    ><a
+                      href="#"
+                      class="gem gem7 gem-checkbox connected_orbs"
+                      data-index="7"
+                    ></a
+                    ><a
+                      href="#"
+                      class="gem gem8 gem-checkbox connected_orbs"
+                      data-index="8"
+                    ></a>
+                    orbs. ATK x<input
+                      type="number"
+                      id="connected_additional_multiple"
+                      min="0"
+                      step="0.01"
+                      required
+                    />
+                    for each additional orb, up to
+                    <select id="connected_count_upto" class="form-control">
+                      <option value="4">4</option>
+                      <option value="5">5</option>
+                      <option value="6">6</option>
+                      <option value="7">7</option>
+                      <option value="8">8</option>
+                      <option value="9">9</option>
+                      <option value="10">10</option>
+                      <option value="11">11</option>
+                      <option value="12">12</option>
+                    </select>
+                    connected orb.
+                  </div>
+                  <div>
+                    <label> Customize Profile Name: </label>
+                    <input
+                      type="text"
+                      class="form-control"
+                      id="name"
+                      required
+                    />
+                    <br />
+                    <div class="col-xs-6">
+                      <button
+                        type="button"
+                        class="btn btn-warning btn-block"
+                        id="save_customize_profile_button"
+                      >
+                        Save
                       </button>
-                      <ul class="dropdown-menu">
-                        <li><a href="#" data-value="0"><span class="gem gem0"></span> Fire</a></li>
-                        <li><a href="#" data-value="1"><span class="gem gem1"></span> Water</a></li>
-                        <li><a href="#" data-value="2"><span class="gem gem2"></span> Wood</a></li>
-                        <li><a href="#" data-value="3"><span class="gem gem3"></span> Light</a></li>
-                        <li><a href="#" data-value="4"><span class="gem gem4"></span> Dark</a></li>
-                        <li><a href="#" data-value="5"><span class="gem gem5"></span> Heart</a></li>
-                        <li><a href="#" data-value="6"><span class="gem gem6"></span> Poison</a></li>
-                        <li><a href="#" data-value="7"><span class="gem gem7"></span> Poison 2</a></li>
-                        <li><a href="#" data-value="8"><span class="gem gem8"></span> Junk</a></li>
-                      </ul>
+                    </div>
+                    <div class="col-xs-6">
+                      <button
+                        type="button"
+                        class="btn btn-danger btn-block"
+                        id="delete_customize_profile_button"
+                      >
+                        Delete
+                      </button>
                     </div>
                   </div>
-                  <div class="col-xs-2 text-center">
-                    <span class="glyphicon glyphicon-arrow-right"></span>
-                  </div>
-                  <div class="col-xs-5">
-                    <select class="form-control">
-                      <option value="0">Fire</option>
-                      <option value="1">Water</option>
-                      <option value="2">Wood</option>
-                      <option value="3">Light</option>
-                      <option value="4">Dark</option>
-                      <option value="5">Heart</option>
-                    </select>
-                  </div>
-                  <div class="col-xs-8">
-                    <input type="text" placeholder="Name" name="qco_name" class="form-control" maxlength="20">
-                  </div>
-                  <div class="col-xs-4">
-                    <button type="button" class="btn btn-warning btn-success btn-block">
-                      Add
-                    </button>
+                </div>
+              </div>
+              <!--multiple session-->
+              <div class="col-xs-12 form-group">
+                <a href="#" id="toggle-quick-change-orbs">
+                  Quick Change Orbs:
+                  <span
+                    class="glyphicon glyphicon-question-sign"
+                    data-placement="bottom"
+                    data-toggle="tooltip"
+                    title="Drop screenshot into rule to apply immediately."
+                  ></span>
+                </a>
+                <div id="toggle-quick-change-orbs-body" style="display: none">
+                  <ol></ol>
+                  <div id="quick-change-orbs-form">
+                    <div class="col-xs-5">
+                      <div class="btn-group btn-block">
+                        <button
+                          type="button"
+                          class="btn btn-default btn-block dropdown-toggle"
+                          data-toggle="dropdown"
+                          aria-haspopup="true"
+                          aria-expanded="false"
+                        >
+                          From <span class="caret"></span>
+                        </button>
+                        <ul class="dropdown-menu">
+                          <li>
+                            <a href="#" data-value="0"
+                              ><span class="gem gem0"></span> Fire</a
+                            >
+                          </li>
+                          <li>
+                            <a href="#" data-value="1"
+                              ><span class="gem gem1"></span> Water</a
+                            >
+                          </li>
+                          <li>
+                            <a href="#" data-value="2"
+                              ><span class="gem gem2"></span> Wood</a
+                            >
+                          </li>
+                          <li>
+                            <a href="#" data-value="3"
+                              ><span class="gem gem3"></span> Light</a
+                            >
+                          </li>
+                          <li>
+                            <a href="#" data-value="4"
+                              ><span class="gem gem4"></span> Dark</a
+                            >
+                          </li>
+                          <li>
+                            <a href="#" data-value="5"
+                              ><span class="gem gem5"></span> Heart</a
+                            >
+                          </li>
+                          <li>
+                            <a href="#" data-value="6"
+                              ><span class="gem gem6"></span> Poison</a
+                            >
+                          </li>
+                          <li>
+                            <a href="#" data-value="7"
+                              ><span class="gem gem7"></span> Poison 2</a
+                            >
+                          </li>
+                          <li>
+                            <a href="#" data-value="8"
+                              ><span class="gem gem8"></span> Junk</a
+                            >
+                          </li>
+                        </ul>
+                      </div>
+                    </div>
+                    <div class="col-xs-2 text-center">
+                      <span class="glyphicon glyphicon-arrow-right"></span>
+                    </div>
+                    <div class="col-xs-5">
+                      <select class="form-control">
+                        <option value="0">Fire</option>
+                        <option value="1">Water</option>
+                        <option value="2">Wood</option>
+                        <option value="3">Light</option>
+                        <option value="4">Dark</option>
+                        <option value="5">Heart</option>
+                      </select>
+                    </div>
+                    <div class="col-xs-8">
+                      <input
+                        type="text"
+                        placeholder="Name"
+                        name="qco_name"
+                        class="form-control"
+                        maxlength="20"
+                      />
+                    </div>
+                    <div class="col-xs-4">
+                      <button
+                        type="button"
+                        class="btn btn-warning btn-success btn-block"
+                      >
+                        Add
+                      </button>
+                    </div>
                   </div>
                 </div>
               </div>
-            </div> <!-- quick check orbs -->
-          </div> <!--row-->
-        </div>
-        <div class="col-sm-4" id="solutions">
-          <div class="row"> <!--hidden-xs-->
-            <div class="col-xs-12">
-              <label>
-                Solutions:
-                <span class="glyphicon glyphicon-question-sign" data-placement="bottom" data-toggle="tooltip" data-html="true"
-                      title="
+              <!-- quick check orbs -->
+            </div>
+            <!--row-->
+          </div>
+          <div class="col-sm-4" id="solutions">
+            <div class="row">
+              <!--hidden-xs-->
+              <div class="col-xs-12">
+                <label>
+                  Solutions:
+                  <span
+                    class="glyphicon glyphicon-question-sign"
+                    data-placement="bottom"
+                    data-toggle="tooltip"
+                    data-html="true"
+                    title="
                       M: Multiplier<br/>
                       W: Weight<br/>
                       ↯: Complexity<br/>
                       L: Length<br/>
                       C: Combo
-                      T: Times of drops"></span>
-              </label>
+                      T: Times of drops"
+                  ></span>
+                </label>
+              </div>
+              <div class="col-xs-7 form-group">
+                <select class="form-control" id="form_sorting">
+                  <option value="multiweight">
+                    Sorted by: M &gt; W &gt; ↯
+                  </option>
+                  <option value="mcwx">
+                    Sorted by: M &gt; C &gt; W &gt; ↯
+                  </option>
+                  <option value="mctwx">
+                    Sorted by: M &gt; C &gt; T &gt; W &gt; ↯
+                  </option>
+                  <option value="multiplier">Sorted by: M &gt; ↯ &gt; W</option>
+                  <option value="length">Sorted by: W &gt; L</option>
+                  <option value="complexity">Sorted by: W &gt; ↯</option>
+                </select>
+              </div>
+              <div class="col-xs-5 form-group">
+                <button
+                  type="button"
+                  class="btn btn-default btn-block"
+                  id="form_lengthen_path"
+                  data-loading-text="Solving..."
+                >
+                  Lengthen Path
+                </button>
+              </div>
+              <div class="col-xs-12">
+                <ol></ol>
+              </div>
             </div>
-            <div class="col-xs-7 form-group">
-              <select class="form-control" id="form_sorting">
-                <option value="multiweight">Sorted by: M &gt; W &gt; ↯</option>
-                <option value="mcwx">Sorted by: M &gt; C &gt; W &gt; ↯</option>
-                <option value="mctwx">Sorted by: M &gt; C &gt; T &gt; W &gt; ↯</option>
-                <option value="multiplier">Sorted by: M &gt; ↯ &gt; W</option>
-                <option value="length">Sorted by: W &gt; L</option>
-                <option value="complexity">Sorted by: W &gt; ↯</option>
-              </select>
+          </div>
+        </div>
+      </form>
+
+      <!-- Modal -->
+      <div
+        class="modal fade"
+        id="importModal"
+        tabindex="-1"
+        role="dialog"
+        aria-labelledby="importModalLabel"
+      >
+        <div class="modal-dialog" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <button
+                type="button"
+                class="close"
+                data-dismiss="modal"
+                aria-label="Close"
+              >
+                <span aria-hidden="true">&times;</span>
+              </button>
+              <h4 class="modal-title" id="importModalLabel">Import</h4>
             </div>
-            <div class="col-xs-5 form-group">
-              <button type="button" class="btn btn-default btn-block" id="form_lengthen_path" data-loading-text="Solving...">Lengthen Path</button>
+            <div class="modal-body clearfix text-center">
+              <div class="row">
+                <div class="col-xs-6 col-sm-3">
+                  <span class="gem gem0"></span> = 0 / r<br />
+                  <span class="gem gem1"></span> = 1 / b<br />
+                  <span class="gem gem2"></span> = 2 / g<br />
+                  <span class="gem gem3"></span> = 3 / y<br />
+                  <span class="gem gem4"></span> = 4 / p<br />
+                </div>
+                <div class="col-xs-6 col-sm-3">
+                  <span class="gem gem5"></span> = 5 / h<br />
+                  <span class="gem gem6"></span> = 6 / q<br />
+                  <span class="gem gem7"></span> = 7 / w<br />
+                  <span class="gem gem8"></span> = 8 / j<br />
+                  <span class="gem gemX"></span> = . / x
+                </div>
+                <div class="col-xs-12 col-sm-6">
+                  <textarea maxlength="30" spellcheck="false"></textarea>
+                </div>
+              </div>
             </div>
-            <div class="col-xs-12">
-              <ol></ol>
+            <div class="modal-footer">
+              <button
+                type="button"
+                class="btn btn-default"
+                data-dismiss="modal"
+              >
+                Cancel
+              </button>
+              <button type="button" class="btn btn-primary">Import</button>
             </div>
           </div>
         </div>
       </div>
-    </form>
-
-    <!-- Modal -->
-    <div class="modal fade" id="importModal" tabindex="-1" role="dialog" aria-labelledby="importModalLabel">
-      <div class="modal-dialog" role="document">
-        <div class="modal-content">
-          <div class="modal-header">
-            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-            <h4 class="modal-title" id="importModalLabel">Import</h4>
-          </div>
-          <div class="modal-body clearfix text-center">
-            <div class="row">
-              <div class="col-xs-6 col-sm-3">
-                <span class="gem gem0"></span> = 0 / r<br/>
-                <span class="gem gem1"></span> = 1 / b<br/>
-                <span class="gem gem2"></span> = 2 / g<br/>
-                <span class="gem gem3"></span> = 3 / y<br/>
-                <span class="gem gem4"></span> = 4 / p<br/>
-              </div>
-              <div class="col-xs-6 col-sm-3">
-                <span class="gem gem5"></span> = 5 / h<br/>
-                <span class="gem gem6"></span> = 6 / q<br/>
-                <span class="gem gem7"></span> = 7 / w<br/>
-                <span class="gem gem8"></span> = 8 / j<br/>
-                <span class="gem gemX"></span> = . / x
-              </div>
-              <div class="col-xs-12 col-sm-6">
-                <textarea maxlength="30" spellcheck="false"></textarea>
+      <div
+        class="modal fade"
+        id="changeOrbsModal"
+        tabindex="-1"
+        role="dialog"
+        aria-labelledby="changeOrbsModalLabel"
+      >
+        <div class="modal-dialog" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <button
+                type="button"
+                class="close"
+                data-dismiss="modal"
+                aria-label="Close"
+              >
+                <span aria-hidden="true">&times;</span>
+              </button>
+              <h4 class="modal-title" id="changeOrbsModalLabel">Change Orbs</h4>
+            </div>
+            <div class="modal-body clearfix text-center">
+              <div class="row">
+                <div class="col-xs-6">
+                  <span class="gem gem-lg gem0"></span> &rarr;
+                  <span
+                    id="orginal-gem0"
+                    class="gem gem-lg gem0 gem-target"
+                  ></span
+                  ><br />
+                  <span class="gem gem-lg gem1"></span> &rarr;
+                  <span
+                    id="orginal-gem1"
+                    class="gem gem-lg gem1 gem-target"
+                  ></span
+                  ><br />
+                  <span class="gem gem-lg gem2"></span> &rarr;
+                  <span
+                    id="orginal-gem2"
+                    class="gem gem-lg gem2 gem-target"
+                  ></span
+                  ><br />
+                  <span class="gem gem-lg gem3"></span> &rarr;
+                  <span
+                    id="orginal-gem3"
+                    class="gem gem-lg gem3 gem-target"
+                  ></span
+                  ><br />
+                  <span class="gem gem-lg gem4"></span> &rarr;
+                  <span
+                    id="orginal-gem4"
+                    class="gem gem-lg gem4 gem-target"
+                  ></span>
+                </div>
+                <div class="col-xs-6">
+                  <span class="gem gem-lg gem5"></span> &rarr;
+                  <span
+                    id="orginal-gem5"
+                    class="gem gem-lg gem5 gem-target"
+                  ></span
+                  ><br />
+                  <span class="gem gem-lg gem6"></span> &rarr;
+                  <span
+                    id="orginal-gem6"
+                    class="gem gem-lg gem6 gem-target"
+                  ></span
+                  ><br />
+                  <span class="gem gem-lg gem7"></span> &rarr;
+                  <span
+                    id="orginal-gem7"
+                    class="gem gem-lg gem7 gem-target"
+                  ></span
+                  ><br />
+                  <span class="gem gem-lg gem8"></span> &rarr;
+                  <span
+                    id="orginal-gem8"
+                    class="gem gem-lg gem8 gem-target"
+                  ></span
+                  ><br />
+                  <span class="gem gem-lg gemX"></span> &rarr;
+                  <span
+                    id="orginal-gemX"
+                    class="gem gem-lg gemX gem-target"
+                  ></span>
+                </div>
               </div>
             </div>
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
-            <button type="button" class="btn btn-primary">Import</button>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-danger pull-left">
+                Reset
+              </button>
+              <button
+                type="button"
+                class="btn btn-default"
+                data-dismiss="modal"
+              >
+                Cancel
+              </button>
+              <button type="button" class="btn btn-primary">Change</button>
+            </div>
           </div>
         </div>
       </div>
-    </div>
-    <div class="modal fade" id="changeOrbsModal" tabindex="-1" role="dialog" aria-labelledby="changeOrbsModalLabel">
-      <div class="modal-dialog" role="document">
-        <div class="modal-content">
-          <div class="modal-header">
-            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-            <h4 class="modal-title" id="changeOrbsModalLabel">Change Orbs</h4>
-          </div>
-          <div class="modal-body clearfix text-center">
-            <div class="row">
-              <div class="col-xs-6">
-                <span class="gem gem-lg gem0"></span> &rarr; <span id="orginal-gem0" class="gem gem-lg gem0 gem-target"></span><br />
-                <span class="gem gem-lg gem1"></span> &rarr; <span id="orginal-gem1" class="gem gem-lg gem1 gem-target"></span><br />
-                <span class="gem gem-lg gem2"></span> &rarr; <span id="orginal-gem2" class="gem gem-lg gem2 gem-target"></span><br />
-                <span class="gem gem-lg gem3"></span> &rarr; <span id="orginal-gem3" class="gem gem-lg gem3 gem-target"></span><br />
-                <span class="gem gem-lg gem4"></span> &rarr; <span id="orginal-gem4" class="gem gem-lg gem4 gem-target"></span>
-              </div>
-              <div class="col-xs-6">
-                <span class="gem gem-lg gem5"></span> &rarr; <span id="orginal-gem5" class="gem gem-lg gem5 gem-target"></span><br />
-                <span class="gem gem-lg gem6"></span> &rarr; <span id="orginal-gem6" class="gem gem-lg gem6 gem-target"></span><br />
-                <span class="gem gem-lg gem7"></span> &rarr; <span id="orginal-gem7" class="gem gem-lg gem7 gem-target"></span><br />
-                <span class="gem gem-lg gem8"></span> &rarr; <span id="orginal-gem8" class="gem gem-lg gem8 gem-target"></span><br />
-                <span class="gem gem-lg gemX"></span> &rarr; <span id="orginal-gemX" class="gem gem-lg gemX gem-target"></span>
-              </div>
-            </div>
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-danger pull-left">Reset</button>
-            <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
-            <button type="button" class="btn btn-primary">Change</button>
-          </div>
+      <div class="row">
+        <div class="col-sm-8">
+          Graphics © Copyright by Gungho Online Entertainment, Inc.<br />
+          <a href="https://github.com/ledowong/padopt">Fork me on Github.</a>
         </div>
       </div>
     </div>
-    <div class="row">
-      <div class="col-sm-8">
-        Graphics © Copyright by Gungho Online Entertainment, Inc.<br/>
-        <a href="https://github.com/ledowong/padopt">Fork me on Github.</a>
-      </div>
+
+    <div id="unsupport-browser">
+      <h1>
+        Your browser is outdated! Click
+        <a href="http://outdatedbrowser.com/en">here</a> to get a new browser.
+      </h1>
     </div>
-  </div>
 
-  <div id="unsupport-browser">
-    <h1>Your browser is outdated! Click <a href="http://outdatedbrowser.com/en">here</a> to get a new browser.</h1>
-  </div>
-
-  <script src="https://code.jquery.com/jquery-1.12.2.min.js" integrity="sha256-lZFHibXzMHo3GGeehn1hudTAP3Sc0uKXBXAzHX1sjtk=" crossorigin="anonymous"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/camanjs/4.1.2/caman.full.min.js"></script>
-  <script type="module" src="js/source.js"></script>
-  <script>
-    // http://stackoverflow.com/questions/4389932/how-do-you-disable-viewport-zooming-on-mobile-safari
-    document.addEventListener('gesturestart', function (e) {
-      e.preventDefault();
-    });
-  </script>
-</body>
+    <script
+      src="https://code.jquery.com/jquery-1.12.2.min.js"
+      integrity="sha256-lZFHibXzMHo3GGeehn1hudTAP3Sc0uKXBXAzHX1sjtk="
+      crossorigin="anonymous"
+    ></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/camanjs/4.1.2/caman.full.min.js"></script>
+    <script type="module" src="js/source.js"></script>
+    <script>
+      // http://stackoverflow.com/questions/4389932/how-do-you-disable-viewport-zooming-on-mobile-safari
+      document.addEventListener("gesturestart", function (e) {
+        e.preventDefault();
+      });
+    </script>
+  </body>
 </html>
