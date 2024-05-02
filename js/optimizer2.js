@@ -16,6 +16,16 @@ Coordinate.prototype.getXY = function(){
 };
 // End
 
+const MatchStyle = Object.freeze({
+  None: 'none',
+  Row: 'row',
+  TPA: 'tpa',
+  VDP: 'vdp',
+  L: 'l',
+  Cross: 'cross',
+  T: 't'
+});
+
 export default function Optimizer(opts){
   var _debug = true;
   var _rows = opts['rows'];
@@ -42,8 +52,8 @@ export default function Optimizer(opts){
   var _makeRC = function (row, col) {
     return {row: row, col: col};
   };
-  var _makeMatch = function (type, count, isRow) {
-    return {type: type, count: count, isRow: isRow};
+  var _makeMatch = function (type, count, matchStyle) {
+    return {type: type, count: count, matchStyle: matchStyle};
   };
   var _copyRC = function(rc) {
     return {row: rc.row, col: rc.col};
@@ -248,27 +258,30 @@ export default function Optimizer(opts){
           if (n.col > 0) { stack.push(_makeRC(n.row, n.col-1)); }
           if (n.col < _cols-1) { stack.push(_makeRC(n.row, n.col+1)); }
         }
-        var isRow = false;
-        for(var k = 0; k < _rows; ++k)
-        {
-          if (_rows == "4") {
-            if(thisMatch[k][0] == 1 && thisMatch[k][1] == 1 && thisMatch[k][2] == 1 && thisMatch[k][3] == 1)
-            {
-              isRow = true;
+        //
+        let matchStyle = MatchStyle.None;
+        if (count == 4) {
+          matchStyle = MatchStyle.TPA;
+        } if (count == 9) { // vdp check
+          for (var k = 0; k < _rows - 2; ++ k) {
+            for (var l = 0; l < _cols - 2; ++l){
+              if (thisMatch[k][l] === 1 && thisMatch[k][l+1] === 1 && thisMatch[k][l+2] === 1 &&
+                  thisMatch[k+1][l] === 1 && thisMatch[k+1][l+1] === 1 && thisMatch[k+1][l+2] === 1 &&
+                  thisMatch[k+2][l] === 1 && thisMatch[k+2][l+1] === 1 && thisMatch[k+2][l+2] === 1) {
+                  matchStyle = MatchStyle.VDP;
+              }
             }
-          } else if (_rows == "5") {
-            if(thisMatch[k][0] == 1 && thisMatch[k][1] == 1 && thisMatch[k][2] == 1 && thisMatch[k][3] == 1 && thisMatch[k][4] == 1)
-            {
-              isRow = true;
-            }
-          } else if (_rows == "6") {
-            if(thisMatch[k][0] == 1 && thisMatch[k][1] == 1 && thisMatch[k][2] == 1 && thisMatch[k][3] == 1 && thisMatch[k][4] == 1 && thisMatch[k][5] == 1)
-            {
-              isRow = true;
+          }
+        } else { // Row check
+          for(var k = 0; k < _rows; ++k)
+          {
+            if (thisMatch[k].every(x => x == 1)) {
+              matchStyle = MatchStyle.Row;
+              break;
             }
           }
         }
-        matches.push(_makeMatch(cur_orb, count, isRow));
+        matches.push(_makeMatch(cur_orb, count, matchStyle));
       }
     }
     return {matches: matches, board: match_board};
@@ -329,9 +342,8 @@ export default function Optimizer(opts){
     });
     matches.forEach(function(m) {
       var base_weight = weights[m.type][m.count >= 5 ? 'mass' : 'normal'];
-      //TPA
-      if(m.count == 4) {
-        base_weight += weights[m.type]['tpa'];
+      if(m.matchStyle != MatchStyle.None){
+        base_weight += weights[m.type][m.matchStyle];
       }
       var multi_orb_bonus = (m.count - 3) * MULTI_ORB_BONUS + 1;
       total_weight += multi_orb_bonus * base_weight * (1 + numRows[m.type]*weights[m.type]['row']/10);

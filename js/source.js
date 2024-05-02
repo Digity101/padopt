@@ -57,7 +57,7 @@ $(document).ready(function() {
   };
 
   var updateDOMprofile = function(p){
-    var field_per_type = 4;
+    var field_per_type = 8;
     var field_postfix, type;
     // weights
     p.weights.forEach(function(value, index){
@@ -67,6 +67,10 @@ $(document).ready(function() {
         case 1: field_postfix = "mass"; break;
         case 2: field_postfix = "row"; break;
         case 3: field_postfix = "tpa"; break;
+        case 4: field_postfix = "vdp"; break;
+        case 5: field_postfix = "l"; break;
+        case 6: field_postfix = "cross"; break;
+        case 7: field_postfix = "t"; break;
       }
       $("#e"+type+"-"+field_postfix).val(value);
     });
@@ -214,6 +218,10 @@ $(document).ready(function() {
         weights.push(Number($('#e' + i + '-mass').val()));
         weights.push(Number($('#e' + i + '-row').val()));
         weights.push(Number($('#e' + i + '-tpa').val()));
+        weights.push(Number($('#e' + i + '-vdp').val()));
+        weights.push(Number($('#e' + i + '-l').val()));
+        weights.push(Number($('#e' + i + '-cross').val()));
+        weights.push(Number($('#e' + i + '-t').val()));
       }
     } else {
       var weights = new Array(types);
@@ -222,7 +230,11 @@ $(document).ready(function() {
           normal: +$('#e' + i + '-normal').val(),
           mass: +$('#e' + i + '-mass').val(),
           row: +$('#e' + i + '-row').val(),
-          tpa: +$('#e' + i + '-tpa').val()
+          tpa: +$('#e' + i + '-tpa').val(),
+          vdp: +$('#e' + i + '-vdp').val(),
+          l: +$('#e' + i + '-l').val(),
+          cross: +$('#e' + i + '-cross').val(),
+          t: +$('#e' + i + '-t').val()
         };
       }
     }

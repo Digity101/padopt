@@ -127,12 +127,13 @@
                 <option value="22">22</option>
                 <option value="23">23</option>
                 <option value="24">24</option>
-                <option value="25" selected>25</option>
+                <option value="25">25</option>
                 <option value="26">26</option>
                 <option value="27">27</option>
                 <option value="28">28</option>
                 <option value="29">29</option>
-                <option value="30">30 (Longer)</option>
+                <option value="30" selected >30</option>
+                <option value="35">35 (Longer)</option>
               </select>
             </div>
             <div class="col-xs-6">
@@ -140,7 +141,7 @@
                 Computation:
               </label>
               <select class="form-control" id="form_max_paths">
-                <option value="100" selected>100 (Faster)</option>
+                <option value="1" selected>1 (Faster)</option>
                 <option value="120">120</option>
                 <option value="140">140</option>
                 <option value="160">160</option>
@@ -156,6 +157,12 @@
                 <option value="360">360</option>
                 <option value="380">380</option>
                 <option value="400">400 (Slower)</option>
+                <option value="500">500</option>
+                <option value="600">600</option>
+                <option value="700">700</option>
+                <option value="800">800</option>
+                <option value="900">900</option>
+                <option value="1000">1000</option>
               </select>
             </div>
           </div>
@@ -180,6 +187,10 @@
                     <th>Mass</th>
                     <th>Row</th>
                     <th>TPA</th>
+                    <th>VDP</th>
+                    <th>L</th>
+                    <th>+</th>
+                    <th>T</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -189,6 +200,10 @@
                     <td><input id="e0-mass" type="number" min="0" step="0.01"/></td>
                     <td><input id="e0-row" type="number" min="0"/></td>
                     <td><input id="e0-tpa" type="number" min="0" step="0.01"/></td>
+                    <td><input id="e0-vdp" type="number" min="0"/></td>
+                    <td><input id="e0-l" type="number" min="0"/></td>
+                    <td><input id="e0-cross" type="number" min="0"/></td>
+                    <td><input id="e0-t" type="number" min="0"/></td>
                   </tr>
                   <tr>
                     <td class="gem gem1" title="Water"></td>
@@ -196,6 +211,10 @@
                     <td><input id="e1-mass" type="number" min="0" step="0.01"/></td>
                     <td><input id="e1-row" type="number" min="0"/></td>
                     <td><input id="e1-tpa" type="number" min="0" step="0.01"/></td>
+                    <td><input id="e1-vdp" type="number" min="0"/></td>
+                    <td><input id="e1-l" type="number" min="0"/></td>
+                    <td><input id="e1-cross" type="number" min="0"/></td>
+                    <td><input id="e1-t" type="number" min="0"/></td>
                   </tr>
                   <tr>
                     <td class="gem gem2" title="Wood"></td>
@@ -203,6 +222,10 @@
                     <td><input id="e2-mass" type="number" min="0" step="0.01"/></td>
                     <td><input id="e2-row" type="number" min="0"/></td>
                     <td><input id="e2-tpa" type="number" min="0" step="0.01"/></td>
+                    <td><input id="e2-vdp" type="number" min="0"/></td>
+                    <td><input id="e2-l" type="number" min="0"/></td>
+                    <td><input id="e2-cross" type="number" min="0"/></td>
+                    <td><input id="e2-t" type="number" min="0"/></td>
                   </tr>
                   <tr>
                     <td class="gem gem3" title="Light"></td>
@@ -210,6 +233,10 @@
                     <td><input id="e3-mass" type="number" min="0" step="0.01"/></td>
                     <td><input id="e3-row" type="number" min="0"/></td>
                     <td><input id="e3-tpa" type="number" min="0" step="0.01"/></td>
+                    <td><input id="e3-vdp" type="number" min="0"/></td>
+                    <td><input id="e3-l" type="number" min="0"/></td>
+                    <td><input id="e3-cross" type="number" min="0"/></td>
+                    <td><input id="e3-t" type="number" min="0"/></td>
                   </tr>
                   <tr>
                     <td class="gem gem4" title="Dark"></td>
@@ -217,6 +244,10 @@
                     <td><input id="e4-mass" type="number" min="0" step="0.01"/></td>
                     <td><input id="e4-row" type="number" min="0"/></td>
                     <td><input id="e4-tpa" type="number" min="0" step="0.01"/></td>
+                    <td><input id="e4-vdp" type="number" min="0"/></td>
+                    <td><input id="e4-l" type="number" min="0"/></td>
+                    <td><input id="e4-cross" type="number" min="0"/></td>
+                    <td><input id="e4-t" type="number" min="0"/></td>
                   </tr>
                   <tr>
                     <td class="gem gem5" title="Heal"></td>
@@ -224,6 +255,10 @@
                     <td><input id="e5-mass" value="0.3" type="number" min="0" step="0.01"/></td>
                     <td><input id="e5-row" type="number" min="0"/></td>
                     <td><input id="e5-tpa" type="number" min="0" step="0.01"/></td>
+                    <td><input id="e5-vdp" type="number" min="0"/></td>
+                    <td><input id="e5-l" type="number" min="0"/></td>
+                    <td><input id="e5-cross" type="number" min="0"/></td>
+                    <td><input id="e5-t" type="number" min="0"/></td>
                   </tr>
                   <tr>
                     <td class="gem gem6" title="Poison"></td>
@@ -231,6 +266,10 @@
                     <td><input id="e6-mass" value="0.1" type="number" min="0" step="0.01"/></td>
                     <td><input id="e6-row" type="number" min="0"/></td>
                     <td><input id="e6-tpa" type="number" min="0" step="0.01"/></td>
+                    <td><input id="e6-vdp" type="number" min="0"/></td>
+                    <td><input id="e6-l" type="number" min="0"/></td>
+                    <td><input id="e6-cross" type="number" min="0"/></td>
+                    <td><input id="e6-t" type="number" min="0"/></td>
                   </tr>
                   <tr>
                     <td class="gem gem7" title="Poison2"></td>
@@ -238,6 +277,10 @@
                     <td><input id="e7-mass" value="0.1" type="number" min="0" step="0.01"/></td>
                     <td><input id="e7-row" type="number" min="0"/></td>
                     <td><input id="e7-tpa" type="number" min="0" step="0.01"/></td>
+                    <td><input id="e7-vdp" type="number" min="0"/></td>
+                    <td><input id="e7-l" type="number" min="0"/></td>
+                    <td><input id="e7-cross" type="number" min="0"/></td>
+                    <td><input id="e7-t" type="number" min="0"/></td>
                   </tr>
                   <tr>
                     <td class="gem gem8" title="Junk"></td>
@@ -245,6 +288,10 @@
                     <td><input id="e8-mass" value="0.1" type="number" min="0" step="0.01"/></td>
                     <td><input id="e8-row" type="number" min="0"/></td>
                     <td><input id="e8-tpa" type="number" min="0" step="0.01"/></td>
+                    <td><input id="e8-vdp" type="number" min="0"/></td>
+                    <td><input id="e8-l" type="number" min="0"/></td>
+                    <td><input id="e8-cross" type="number" min="0"/></td>
+                    <td><input id="e8-t" type="number" min="0"/></td>
                   </tr>
                 </tbody>
                 <tfoot>
