@@ -653,6 +653,13 @@ export default function Optimizer(opts) {
         return b.weight - a.weight || a.complexity - b.complexity;
       } else if (_sorting == "length") {
         return b.weight - a.weight || a.path.length - b.path.length;
+      } else if (_sorting == "ctxl") {
+        return (
+          b.matches.length - a.matches.length ||
+          b.drop_times - a.drop_times ||
+          a.complexity - b.complexity ||
+          a.path.length - b.path.length
+        );
       }
     });
   };

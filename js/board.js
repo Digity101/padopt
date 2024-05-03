@@ -428,14 +428,14 @@ export default function Board(canvas_id, opts) {
     var rail_y = {};
     for (var i = 1; i < xys.length; ++i) {
       if (xys[i].y === xys[i - 1].y) {
-        y = xys[i].y;
+        var y = xys[i].y;
         rail_y[y] = rail_y[y] || 0;
         var dy = _ORB_SIZE * (rail_y[y] - rail_half) * dr;
         rail_y[y] = (rail_y[y] + rail_half) % rail_num;
         xys[i].y += dy;
         xys[i - 1].y += dy;
       } else if (xys[i].x === xys[i - 1].x) {
-        x = xys[i].x;
+        var x = xys[i].x;
         rail_x[x] = rail_x[x] || 0;
         var dx = _ORB_SIZE * (rail_x[x] - rail_half) * dr;
         rail_x[x] = (rail_x[x] + rail_half) % rail_num;

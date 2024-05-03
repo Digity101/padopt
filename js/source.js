@@ -322,6 +322,10 @@ $(document).ready(function () {
       html_array.push(solution.mult.toFixed(2));
       html_array.push(", &#8623;=");
       html_array.push(solution.complexity);
+      html_array.push(", C=");
+      html_array.push(solution.matches.length);
+      html_array.push(", T=");
+      html_array.push(solution.drop_times);
       html_array.push("<br/>");
       var sorted_matches = solution.matches.slice();
       sorted_matches.sort(function (a, b) {
